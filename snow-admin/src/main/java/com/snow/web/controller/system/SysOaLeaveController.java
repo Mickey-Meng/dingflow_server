@@ -1,6 +1,6 @@
 package com.snow.web.controller.system;
 
-import cn.hutool.core.date.BetweenFormater;
+import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
 import com.snow.common.annotation.Log;
 import com.snow.common.annotation.RepeatSubmit;
@@ -13,9 +13,9 @@ import com.snow.common.enums.WorkRecordStatus;
 import com.snow.common.utils.poi.ExcelUtil;
 import com.snow.flowable.domain.CompleteTaskDTO;
 import com.snow.flowable.domain.HistoricTaskInstanceDTO;
-import com.snow.flowable.domain.HistoricTaskInstanceVO;
 import com.snow.flowable.domain.leave.LeaveRestartTask;
 import com.snow.flowable.domain.leave.SysOaLeaveForm;
+import com.snow.flowable.domain.response.HistoricTaskInstanceResp;
 import com.snow.flowable.service.FlowableTaskService;
 import com.snow.flowable.service.impl.FlowableServiceImpl;
 import com.snow.framework.util.ShiroUtils;
@@ -146,7 +146,7 @@ public class SysOaLeaveController extends BaseController
     public String edit(@PathVariable("id") Integer id, ModelMap mmap)
     {
         SysOaLeave sysOaLeave = sysOaLeaveService.selectSysOaLeaveById(id);
-        String spendTime = DateUtil.formatBetween(sysOaLeave.getStartTime(), sysOaLeave.getEndTime(), BetweenFormater.Level.SECOND);
+        String spendTime = DateUtil.formatBetween(sysOaLeave.getStartTime(), sysOaLeave.getEndTime(), BetweenFormatter.Level.SECOND);
         sysOaLeave.setLeaveTime(spendTime);
         mmap.put("sysOaLeave", sysOaLeave);
         return prefix + "/edit";
@@ -195,8 +195,8 @@ public class SysOaLeaveController extends BaseController
         historicTaskInstanceDTO.setBusinessKey(sysOaLeave.getLeaveNo());
         historicTaskInstanceDTO.setProcessInstanceId(sysOaLeave.getProcessInstanceId());
         historicTaskInstanceDTO.setProcessStatus(WorkRecordStatus.FINISHED);
-        List<HistoricTaskInstanceVO> historicTaskInstanceList= flowableTaskService.getHistoricTaskInstanceNoPage(historicTaskInstanceDTO);
-        String spendTime = DateUtil.formatBetween(sysOaLeave.getStartTime(), sysOaLeave.getEndTime(), BetweenFormater.Level.SECOND);
+        List<HistoricTaskInstanceResp> historicTaskInstanceList= flowableTaskService.getHistoricTaskInstanceNoPage(historicTaskInstanceDTO);
+        String spendTime = DateUtil.formatBetween(sysOaLeave.getStartTime(), sysOaLeave.getEndTime(), BetweenFormatter.Level.SECOND);
         sysOaLeave.setLeaveTime(spendTime);
         mmap.put("sysOaLeave", sysOaLeave);
         mmap.put("historicTaskInstanceList", historicTaskInstanceList);

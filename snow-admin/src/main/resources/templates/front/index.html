@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>AutoFLow</title>
+    <title>DingFlow - 官网</title>
     <!-- Custom styles for this template -->
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
     <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
@@ -33,26 +33,21 @@
             <p>借助钉钉，致力于流程，让流程更简单</p>
         </div>
     </div>
-    <div th:each="news,iterStat : ${newsList}">
-        <div class="row">
-            <div class="col-md-6 text-center  wow zoomIn">
-                <img th:src="@{/img/landing/xinwen.png}" alt="dashboard" class="img-responsive">
-            </div>
-            <div class="col-md-6 text-center wow fadeInLeft">
-                <div>
-                    <!--  <i class="fa fa-mobile features-icon"></i>-->
-                    <h2>[[${news.noticeTitle}]]</h2>
-
-                    <p th:utext="${#strings.substring(news.noticeContent,0,100)}+'...'"></p>
-                    <br/>
-                    <p>
-                        <a class="btn btn-lg btn-primary" th:href="@{'/front/news/'+${news.noticeId}}" target="_blank" role="button">阅读更多</a>
-                    </p>
+    <div class="row">
+        <div class="col-md-6 text-center  wow zoomIn">
+            <img th:src="@{/img/landing/xinwen.png}" alt="dashboard" class="img-responsive">
+        </div>
+        <div th:each="news,iterStat : ${newsList}" style="margin-top: 20px">
+            <div class="col-md-6">
+                <div class="pull-left">
+                    <h2>
+                        <i class="fa fa-fire text-danger"></i>&nbsp;   <a class="text-primary " th:href="@{'/front/news/'+${news.noticeId}}" target="_blank" > [[${news.noticeTitle}]]</a>
+                    </h2>
                 </div>
             </div>
+            <br/>
         </div>
     </div>
-
 </section>
 
 <section  class="container features">
@@ -65,7 +60,7 @@
     </div>
     <div class="row features-block">
         <div class="col-lg-6 features-text wow fadeInLeft">
-
+            <!--<small>DingFlow</small>-->
             <h2>DingFlow</h2>
             <p>　　DingFlow项目也叫Snow系统。项目之初是笔者的一个flowable学习demo，取其雪之意为之Snow。后来在公司集成钉钉接口时，偶然间发现钉钉自带工作流插件，便想利用业余时间打造一款开源的面向中小型企业管理系统。该管理系统能和钉钉数据打通，企业可以通过钉钉移动化办公，也可通过系统开发满足自身不同需求。DingFlow取其DingTalk和Flowable的前四个单词组成。寓意着构建钉钉工作流一体化。目前系统还处于初始孵化阶段，虽然目标很明确，但是具体的实施方案还不够详细。笔者也呼吁有能之士能参与进来一起携手做好DingFlow。</p>
             <a href="" class="btn btn-primary">学到更多</a>
@@ -130,10 +125,25 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-4 wow fadeInLeft">
+            <div class="col-sm-3 wow fadeInLeft">
                 <div class="team-member">
-                    <img th:src="@{/img/landing/avatar3.jpg}" class="img-responsive img-circle img-small" alt="">
-                    <h4><span class="navy">阿西</span> 后端开发工程师</h4>
+                    <img th:src="@{/img/landing/avatar5.jpg}" class="img-responsive img-circle img-small" alt="">
+                    <h4><span class="navy">问天</span> 后端开发工程师</h4>
+                    <p><strong>个性签名：</strong> 在相同的文明程度和种族背景下，每一个正常人的潜意识与意识相加之和，在精神能量意义上基本上是相等的</p>
+                    <ul class="list-inline social-icon">
+                        <li><a href="#"><i class="fa fa-twitter"></i></a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-facebook"></i></a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-linkedin"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-3 wow fadeInLeft">
+                <div class="team-member">
+                    <img th:src="@{/img/landing/avatar4.jpg}" class="img-responsive img-circle img-small" alt="">
+                    <h4><span class="navy">苏小唐</span> 后端开发工程师</h4>
                     <p><strong>个性签名：</strong> 有些事不是努力就可以改变的，五十块的人民币设计的再好看，也没有一百块的招人喜欢</p>
                     <ul class="list-inline social-icon">
                         <li><a href="#"><i class="fa fa-twitter"></i></a>
@@ -145,11 +155,11 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-sm-4">
-                <div class="team-member wow zoomIn">
-                    <img th:src="@{/img/landing/avatar1.jpg}" class="img-responsive img-circle" alt="">
+            <div class="col-sm-3 wow fadeInRight">
+                <div class="team-member ">
+                    <img th:src="@{/img/landing/avatar1.jpg}" class="img-responsive img-circle img-small" alt="">
                     <h4><span class="navy">阿吉</span> 后端开发工程师</h4>
-                    <p><strong>个性签名：</strong> 天下英雄出我辈，一入江湖岁月催。鸿图霸道业谈笑间，不胜人生一场醉。 提剑跨骑内挥鬼雨，白骨如山鸟惊飞。尘世如潮人如水，只叹江湖几人回</p>
+                    <p><strong>个性签名：</strong> 认知升级是连接，连接优秀的思维方式，连接解决问题的最短路径，连接一切优秀的方法</p>
                     <ul class="list-inline social-icon">
                         <li><a href="#"><i class="fa fa-twitter"></i></a>
                         </li>
@@ -160,7 +170,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-sm-4 wow fadeInRight">
+            <div class="col-sm-3 wow fadeInRight">
                 <div class="team-member">
                     <img th:src="@{/img/landing/avatar2.jpg}" class="img-responsive img-circle img-small" alt="">
                     <h4><span class="navy">阿衰</span> web前端开发工程师</h4>
@@ -206,7 +216,7 @@
             <div class="col-lg-3 features-text  wow fadeInRight">
                 <small>DingFlow</small>
                 <h2>企业微信版DingFlow</h2>
-                <p>　　未来会通过搭载企业微信，构建一套私域企业流量管理系统。通过简单的分流、引流转化微信客户为企业客户，结合强大的后台支持，灵活的运营模式，建立企业与客户的强联系，让企业的盈利模式有了多种不同的选择。</p>
+                <p>　　未来会通过搭载企业微信，构建一套私域企业流量后台管理系统。通过简单的分流、引流转化微信客户为企业客户，结合强大的后台支持，灵活的运营模式，建立企业与客户的强联系，让企业的盈利模式有了多种不同的选择。</p>
                 <a href="" class="btn btn-primary">Learn more</a>
             </div>
         </div>
@@ -344,13 +354,13 @@
             <div class="col-lg-12 text-center">
                 <div class="navy-line"></div>
                 <h1>我们的合作伙伴说</h1>
-                <p>数十家于DingFlow系统合作后，都给予高度认可和评价</p>
+                <p>数十家中小企业使用DingFlow系统后，都给予高度认可和评价</p>
             </div>
         </div>
         <div class="row features-block">
             <div class="col-lg-4">
                 <div class="bubble">
-                    "借助钉钉，致力于流程，让流程更简单"
+                    "我们近期准备筹划公司，你项目里的所有功能都是我需要的！给与了我们极大的帮助"
                 </div>
                 <div class="comments-avatar">
                     <a href="" class="pull-left">
@@ -358,7 +368,7 @@
                     </a>
                     <div class="media-body">
                         <div class="commens-name">
-                            小明
+                            寒武纪
                         </div>
                         <small class="text-muted">企鹅公司</small>
                     </div>
@@ -461,25 +471,25 @@
                         基础
                     </li>
                     <li class="pricing-desc">
-                        基础版描述
+                        免费开源
                     </li>
                     <li class="pricing-price">
-                        <span>￥16</span> / 月
+                        <span>免费</span>
                     </li>
                     <li>
-                        主页
+                        企业官网
                     </li>
                     <li>
-                        应用
+                        用户管理
                     </li>
                     <li>
-                        好友
+                        组织架构管理
                     </li>
                     <li>
-                        日历
+                       流程管理
                     </li>
                     <li>
-                        AngularJs
+                        表单管理
                     </li>
                     <li>
                         <a class="btn btn-primary btn-xs" th:href="@{/front/register}">注册</a>
@@ -490,31 +500,31 @@
             <div class="col-lg-4 wow zoomIn">
                 <ul class="pricing-plan list-unstyled selected">
                     <li class="pricing-title">
-                        标准
+                        企业版
                     </li>
                     <li class="pricing-desc">
-                        标注版描述
+                        如果您需要定制开发软件，请联系按照网站下方联系方式联系我们
                     </li>
                     <li class="pricing-price">
-                        <span>￥22</span> / 月
+                        <span>定制开发价格面议</span>
                     </li>
                     <li>
-                        主页
+                        企业官网
                     </li>
                     <li>
-                        应用
+                        用户管理
                     </li>
                     <li>
-                        好友
+                        组织架构管理
                     </li>
                     <li>
-                        日历
+                        流程管理
                     </li>
                     <li>
-                        AngularJs
+                        表单管理
                     </li>
                     <li>
-                        <strong>支持平台</strong>
+                        <strong> 你的需求你做主</strong>
                     </li>
                     <li class="plan-action">
                         <a class="btn btn-primary btn-xs" th:href="@{/front/register}">注册</a>
@@ -525,28 +535,28 @@
             <div class="col-lg-4 wow zoomIn">
                 <ul class="pricing-plan list-unstyled">
                     <li class="pricing-title">
-                        企业版
+                        标准
                     </li>
                     <li class="pricing-desc">
-                        企业版描述
+                        标准版本
                     </li>
                     <li class="pricing-price">
-                        <span>￥160</span> / 月
+                        <span>免费开源</span>
                     </li>
                     <li>
-                        主页
+                        企业官网
                     </li>
                     <li>
-                        应用
+                        用户管理
                     </li>
                     <li>
-                        好友
+                        组织架构管理
                     </li>
                     <li>
-                        日历
+                        流程管理
                     </li>
                     <li>
-                        AngularJs
+                        表单管理
                     </li>
                     <li>
                         <a class="btn btn-primary btn-xs" th:href="@{/front/register}">注册</a>

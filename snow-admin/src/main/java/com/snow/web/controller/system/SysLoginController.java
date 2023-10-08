@@ -3,17 +3,16 @@ package com.snow.web.controller.system;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.snow.common.core.domain.LoginBody;
 import com.snow.framework.shiro.auth.LoginType;
 import com.snow.framework.shiro.auth.UserToken;
-import lombok.RequiredArgsConstructor;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import com.snow.common.core.controller.BaseController;
 import com.snow.common.core.domain.AjaxResult;
 import com.snow.common.utils.ServletUtils;
@@ -24,9 +23,7 @@ import com.snow.common.utils.StringUtils;
  * 
  * @author snow
  */
-@Validated
-@RequiredArgsConstructor
-@RestController
+@Controller
 public class SysLoginController extends BaseController
 {
     @GetMapping("/login")
@@ -43,10 +40,10 @@ public class SysLoginController extends BaseController
 
     @PostMapping("/login")
     @ResponseBody
-    public AjaxResult ajaxLogin(@Validated @RequestBody LoginBody loginBody)
+    public AjaxResult ajaxLogin(String username, String password, Boolean rememberMe)
     {
         //UsernamePasswordToken token = new UsernamePasswordToken(username, password, rememberMe,"1");
-        UserToken token = new UserToken(loginBody.getUsername(), loginBody.getPassword(), LoginType.PASSWORD, false);
+        UserToken token = new UserToken(username, password, LoginType.PASSWORD, rememberMe);
         Subject subject = SecurityUtils.getSubject();
         try
         {

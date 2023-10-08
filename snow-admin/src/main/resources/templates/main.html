@@ -20,6 +20,25 @@
         .news_li a,.swap a{ color:#fff;}
         .swap{top:19px;}
     </style>
+    <meta name="wpk-bid" content="dta_1_1113287306"> <script>
+    var isDingtalk = navigator && /DingTalk/.test(navigator.userAgent);
+    var isProductEnv = window &&window.location &&window.location.host
+   // && window.location.host.indexOf('//127.0.0.1')===-1
+  //  && window.location.host.indexOf('//localhost')===-1
+    && window.location.host.indexOf('//192.168.')===-1
+// 如果有其它测试域名，请一起排掉，减少测试环境对生产环境监控的干扰
+    if (isProductEnv) {
+        !(function(c,i,e,b){
+            var h=i.createElement("script");
+            var f=i.getElementsByTagName("script")[0];
+            h.type="text/javascript";
+            h.crossorigin=true;
+            h.onload=function(){c[b]||(c[b]=new c.wpkReporter({bid:"dta_1_1113287306"}));
+                c[b].installAll()};
+            f.parentNode.insertBefore(h,f);
+            h.src=e
+        })(window,document,"https://g.alicdn.com/woodpeckerx/jssdk??wpkReporter.js","__wpk"); }
+</script>
 </head>
 
 <body class="gray-bg">
@@ -109,7 +128,7 @@
                                     </h3>
                                 </a>
                                 <br/>
-                                <h2 class="m-xs text-center">表单管理</h2>
+                                <h2 class="m-xs text-center">智能账单</h2>
                             </div>
                         </div>
                         <div class="col-sm-3">
@@ -159,6 +178,32 @@
     </div>
 
 
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h3 class="text-success">   <i class="fa  fa-list text-center " style="color:#31b0d5"></i>  企业动态</h3>
+                </div>
+                <div class="ibox-content" style="margin-top: -10px">
+                    <div class="table table-hover table-striped">
+                        <table id="notices-table"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h3 class="text-success">   <i class="fa fa-tasks text-center " style="color:#31b0d5"></i>  我的已办列表</h3>
+                </div>
+                <div class="ibox-content">
+                    <div class="table table-hover table-striped">
+                        <table id="tasked-table"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
@@ -283,6 +328,114 @@
                 }]
         };
         $.table.init(options);
+        var types = [[${@dict.getType('sys_notice_type')}]];
+        var noticesOptions = {
+            id: "notices-table",
+            url: "/system/notice/list",
+            striped: true,
+            loadingFontSize:20,
+            pageSize: 5,
+            pageNumber: 1,
+            striped: true,
+            showHeader: false,
+            showRefresh: false,
+            showColumns: false,
+            showToggle: false,
+            showSearch: false,
+            modalName: "公告",
+            columns: [
+                {
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        return index+1;
+                    }
+                },
+                {
+                    field : 'noticeTitle',
+                    title : '公告标题',
+                    formatter: function(value, row, index) {
+                        if(row.new){
+                            return '<span class="text-danger" ><i class="glyphicon glyphicon-flag"></i></span><a class="text-success" href="javascript:void(0)"  onclick="noticeDetail(\''+row.noticeId +'\')">'+value+'</a> ';
+                        }else {
+                            return '<a class="text-success" href="javascript:void(0)"  onclick="noticeDetail(\''+row.noticeId +'\')">'+value+'</a> ';
+                        }
+                    }
+                },
+                {
+                    field: 'noticeType',
+                    title: '公告类型',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(types, value);
+                    }
+                },
+                {
+                    field: 'createTime',
+                    title: '创建时间',
+                    sortable: true
+                }]
+        };
+        $.table.init(noticesOptions);
+
+        var processType = [[${@dict.getType('sys_process_type')}]];
+        var taskedOptions = {
+            id: "tasked-table",
+            url: "/flow/getMyTakePartInTask",
+            striped: true,
+            loadingFontSize:20,
+            pageSize: 5,
+            pageNumber: 1,
+            striped: true,
+            showHeader: false,
+            showRefresh: false,
+            showColumns: false,
+            showToggle: false,
+            showSearch: false,
+            modalName: "已办",
+            columns: [
+                {
+                    title: '序号',
+                    formatter: function (value, row, index) {
+                        return index+1;
+                    }
+                },
+                {
+                    field: 'taskName',
+                    title: '任务名称',
+                    formatter: function(value, row, index) {
+                        var processType=row.processType;
+                        if(processType=='FORM_PROCESS'){
+                            return '<a class="text-success" href="javascript:void(0)"  onclick="taskFormDetail(\''+row.taskId +'\')">'+value+'</a> ';
+                        }else {
+                            return '<a class="text-success" href="javascript:void(0)"  onclick="taskDetail(\''+row.taskId +'\')">'+value+'</a> ';
+                        }
+                    }
+                },
+                {
+                    field: 'processName',
+                    title: '所属流程'
+                },
+                {
+                    field: 'processType',
+                    title: '流程类型',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(processType, value);
+                    }
+                },
+                {
+                    field: 'businessKey',
+                    title: '单号',
+                    formatter: function(value, row, index) {
+                        var fromDetailUrl= row.fromDetailUrl;
+                        return '<a class="success" href="javascript:void(0)"  onclick="fromDetailUrl(\''+fromDetailUrl+'\')">'+value+'</a> ';
+                    }
+
+                },
+                {
+                    field: 'startTime',
+                    title: '创建时间'
+                }]};
+        $.table.init(taskedOptions);
     });
 
     function cancelApiTask(taskId) {
@@ -296,18 +449,18 @@
     }
 
     function toDoMyTask() {
-        var preViewUrl=prefixFlow+'/toDoMyTask?';
+        var preViewUrl=prefixFlow+'/toDoMyTask';
         $.modal.openTab("我的待办任务", preViewUrl);
     }
 
     function toMyTakePartInProcess() {
-        var preViewUrl=prefixFlow+'/toMyTakePartInProcess?';
+        var preViewUrl=prefixFlow+'/toMyTakePartInTask';
         $.modal.openTab("我的已办任务", preViewUrl);
     }
 
     function openBill() {
-        var preViewUrl='/from/instance';
-        $.modal.openTab("表单管理", preViewUrl);
+        var preViewUrl='/system/flow';
+        $.modal.openTab("财务账单流水", preViewUrl);
     }
 
     function openUser() {
@@ -327,11 +480,18 @@
         var detailUrl="/system/notice/detail/"+id;
         $.modal.openTab("公告详情", detailUrl);
     }
-    function openMoreNotice(){
-        $.modal.openTab("公告管理","/system/notice");
+
+    function fromDetailUrl(url) {
+        $.modal.openTab("订单详情", url);
     }
-    function openMoreHistoricTask(){
-        $.modal.openTab("我的已办","/flow/toMyTakePartInTask");
+
+    function taskDetail(taskId) {
+        var url='/flow/getMyTaskedDetail?taskId='+taskId;
+        $.modal.openTab("已办任务详情", url);
+    }
+    function taskFormDetail(taskId) {
+        var url='/getMyTaskedDetail?taskId='+taskId;
+        $.modal.openTab("已办任务详情", url);
     }
 </script>
 <script type="text/javascript">

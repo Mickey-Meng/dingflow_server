@@ -11,9 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,8 +31,6 @@ public class CommonController {
 
     @Autowired
     private StorageService storageService;
-
-
 
 
     /**
@@ -61,9 +60,9 @@ public class CommonController {
             if (!FileUtils.checkAllowDownload(fileName)) {
                 throw new Exception(StringUtils.format("文件名称({})非法，不允许下载。 ", fileName));
             }
-
             String realFileName = System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
             String filePath = Global.getProfile() +"/download/" +fileName;
+
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             FileUtils.setAttachmentResponseHeader(response, realFileName);
             FileUtils.writeBytes(filePath, response.getOutputStream());
@@ -76,22 +75,18 @@ public class CommonController {
         }
     }
 
-
-
     /**
      * 通用上传请求
      */
     @PostMapping("/common/upload")
     @ResponseBody
-    public AjaxResult uploadFile(MultipartFile file,@RequestParam  String taskId,@RequestParam  String select) {
+    public AjaxResult uploadFile(MultipartFile file) {
         try {
-            SysFile sysFile=  storageService.upload(file);
-//            SysFile store = storageService.store(file);
-
+            SysFile store = storageService.store(file);
             AjaxResult ajax = AjaxResult.success();
-            ajax.put("fileKey",sysFile.getKey());
-            ajax.put("fileName", sysFile.getName());
-            ajax.put("url", sysFile.getUrl());
+            ajax.put("fileKey",store.getKey());
+            ajax.put("fileName", store.getName());
+            ajax.put("url", store.getUrl());
             return ajax;
         } catch (Exception e) {
             return AjaxResult.error(e.getMessage());

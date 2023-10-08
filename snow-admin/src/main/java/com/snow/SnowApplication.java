@@ -4,7 +4,6 @@ import com.snow.flowable.common.SpringContextUtil;
 import org.flowable.ui.common.rest.idm.remote.RemoteAccountResource;
 import org.flowable.ui.modeler.properties.FlowableModelerAppProperties;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
@@ -22,7 +21,7 @@ import java.util.concurrent.Executor;
 
 /**
  * 启动程序
- *
+ * 
  * @author snow
  */
 @SpringBootApplication(
@@ -35,7 +34,6 @@ import java.util.concurrent.Executor;
 )
 @ComponentScan(basePackages = {"com.snow",
         "org.flowable.ui",
-        "org.jeecg.modules.jmreport"
 }, excludeFilters= @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {RemoteAccountResource.class}))
 @EnableAsync
 public class SnowApplication extends AsyncConfigurerSupport {

@@ -1,6 +1,10 @@
 package com.snow.config;
 
-import javax.servlet.http.HttpServletRequest;
+import com.snow.common.core.domain.AjaxResult;
+import com.snow.common.exception.BusinessException;
+import com.snow.common.exception.DemoModeException;
+import com.snow.common.utils.ServletUtils;
+import com.snow.common.utils.security.PermissionUtils;
 import org.apache.shiro.authz.AuthorizationException;
 import org.flowable.common.engine.api.FlowableException;
 import org.slf4j.Logger;
@@ -10,13 +14,8 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
-import com.snow.common.core.domain.AjaxResult;
-import com.snow.common.exception.BusinessException;
-import com.snow.common.exception.DemoModeException;
-import com.snow.common.utils.ServletUtils;
-import com.snow.common.utils.security.PermissionUtils;
 
-import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 全局异常处理器
@@ -31,15 +30,11 @@ public class SnowGlobalExceptionHandler {
      * 权限校验失败 如果请求为ajax返回json，普通请求跳转页面
      */
     @ExceptionHandler(AuthorizationException.class)
-    public Object handleAuthorizationException(HttpServletRequest request, AuthorizationException e)
-    {
+    public Object handleAuthorizationException(HttpServletRequest request, AuthorizationException e) {
         log.error(e.getMessage(), e);
-        if (ServletUtils.isAjaxRequest(request))
-        {
+        if (ServletUtils.isAjaxRequest(request)) {
             return AjaxResult.error(PermissionUtils.getMsg(e.getMessage()));
-        }
-        else
-        {
+        } else {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.setViewName("error/unauth");
             return modelAndView;
@@ -50,8 +45,7 @@ public class SnowGlobalExceptionHandler {
      * 请求方式不支持
      */
     @ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
-    public AjaxResult handleException(HttpRequestMethodNotSupportedException e)
-    {
+    public AjaxResult handleException(HttpRequestMethodNotSupportedException e) {
         log.error(e.getMessage(), e);
         return AjaxResult.error("不支持' " + e.getMethod() + "'请求");
     }
@@ -60,8 +54,7 @@ public class SnowGlobalExceptionHandler {
      * 拦截未知的运行时异常
      */
     @ExceptionHandler(RuntimeException.class)
-    public AjaxResult notFount(RuntimeException e)
-    {
+    public AjaxResult notFount(RuntimeException e) {
         log.error("运行时异常:", e);
         return AjaxResult.error("运行时异常:" + e.getMessage());
     }
@@ -70,39 +63,35 @@ public class SnowGlobalExceptionHandler {
      * 系统异常
      */
     @ExceptionHandler(Exception.class)
-    public AjaxResult handleException(Exception e)
-    {
+    public Object handleException(HttpServletRequest request,Exception e) {
         log.error(e.getMessage(), e);
-        return AjaxResult.error("服务器错误，请联系管理员");
+        if (ServletUtils.isAjaxRequest(request)) {
+            return AjaxResult.error("服务器开小差了，请稍后再试");
+        } else {
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.addObject("errorMessage", e.getMessage());
+            modelAndView.setViewName("error/business");
+            return modelAndView;
+        }
     }
 
     /**
      * 流程异常
      */
     @ExceptionHandler(FlowableException.class)
-    public AjaxResult flowableException(Exception e)
-    {
-
-        String errMessage=Optional.ofNullable(e.getMessage()).orElse("");
-        log.error("流程服务异常："+e.getMessage(), e);
-        if(e.getMessage().contains("")){
-            return AjaxResult.error("流程服务异常，请联系管理员");
-        }
-        return AjaxResult.error(errMessage);
+    public AjaxResult flowableException(FlowableException e) {
+        log.error(e.getMessage(), e);
+        return AjaxResult.error("流程服务异常，请联系管理员");
     }
     /**
      * 业务异常
      */
     @ExceptionHandler(BusinessException.class)
-    public Object businessException(HttpServletRequest request, BusinessException e)
-    {
+    public Object businessException(HttpServletRequest request, BusinessException e) {
         log.error(e.getMessage(), e);
-        if (ServletUtils.isAjaxRequest(request))
-        {
+        if (ServletUtils.isAjaxRequest(request)) {
             return AjaxResult.error(e.getMessage());
-        }
-        else
-        {
+        } else {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.addObject("errorMessage", e.getMessage());
             modelAndView.setViewName("error/business");
@@ -114,8 +103,7 @@ public class SnowGlobalExceptionHandler {
      * 自定义验证异常
      */
     @ExceptionHandler(BindException.class)
-    public AjaxResult validatedBindException(BindException e)
-    {
+    public AjaxResult validatedBindException(BindException e) {
         log.error(e.getMessage(), e);
         String message = e.getAllErrors().get(0).getDefaultMessage();
         return AjaxResult.error(message);
@@ -125,8 +113,7 @@ public class SnowGlobalExceptionHandler {
      * 演示模式异常
      */
     @ExceptionHandler(DemoModeException.class)
-    public AjaxResult demoModeException(DemoModeException e)
-    {
+    public AjaxResult demoModeException(DemoModeException e) {
         return AjaxResult.error("演示模式，不允许操作");
     }
 }

@@ -147,7 +147,7 @@ public class OfficialFlowController extends BaseController {
     public AjaxResult  executeProcessInstance(FlowExecuteTaskRequest flowExecuteTaskRequest){
         SysUser sysUser = ShiroUtils.getSysUser();
         flowExecuteTaskRequest.setActionerUserid(sysUser.getDingUserId());
-        Boolean aBoolean = dingOfficialFlowService.executeProcessInstance(flowExecuteTaskRequest);
+        Boolean aBoolean = dingOfficialFlowService.executeProcessInstanceV2(flowExecuteTaskRequest);
         return AjaxResult.success(aBoolean);
     }
 

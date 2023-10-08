@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.snow.system.mapper.SysDbTableMapper">
+
+    <resultMap type="SysDbTable" id="SysDbTableResult">
+            <result property="id"    column="id"    />
+            <result property="dbName"    column="db_name"    />
+            <result property="remark"    column="remark"    />
+            <result property="createBy"    column="create_by"    />
+            <result property="createTime"    column="create_time"    />
+            <result property="updateBy"    column="update_by"    />
+            <result property="updateTime"    column="update_time"    />
+            <result property="deleted"    column="deleted"    />
+    </resultMap>
+
+    <sql id="selectSysDbTableVo">
+        select id, db_name, remark, create_by, create_time, update_by, update_time, deleted from sys_db_table
+    </sql>
+
+    <select id="selectSysDbTableList" parameterType="SysDbTable" resultMap="SysDbTableResult">
+        <include refid="selectSysDbTableVo"/>
+        <where>
+                <if test="dbName != null  and dbName != ''"> and db_name like concat('%', #{dbName}, '%')</if>
+                <if test="deleted != null "> and deleted = #{deleted}</if>
+        </where>
+    </select>
+
+    <select id="selectSysDbTableById" parameterType="Long" resultMap="SysDbTableResult">
+            <include refid="selectSysDbTableVo"/>
+            where id = #{id}
+    </select>
+
+    <insert id="insertSysDbTable" parameterType="SysDbTable" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_db_table
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+              <if test="dbName != null">db_name,</if>
+              <if test="remark != null">remark,</if>
+              <if test="createBy != null">create_by,</if>
+              <if test="createTime != null">create_time,</if>
+              <if test="updateBy != null">update_by,</if>
+              <if test="updateTime != null">update_time,</if>
+              <if test="deleted != null">deleted,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+              <if test="dbName != null">#{dbName},</if>
+              <if test="remark != null">#{remark},</if>
+              <if test="createBy != null">#{createBy},</if>
+              <if test="createTime != null">#{createTime},</if>
+              <if test="updateBy != null">#{updateBy},</if>
+              <if test="updateTime != null">#{updateTime},</if>
+              <if test="deleted != null">#{deleted},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysDbTable" parameterType="SysDbTable">
+        update sys_db_table
+        <trim prefix="SET" suffixOverrides=",">
+              <if test="dbName != null">db_name = #{dbName},</if>
+              <if test="remark != null">remark = #{remark},</if>
+              <if test="createBy != null">create_by = #{createBy},</if>
+              <if test="createTime != null">create_time = #{createTime},</if>
+              <if test="updateBy != null">update_by = #{updateBy},</if>
+              <if test="updateTime != null">update_time = #{updateTime},</if>
+              <if test="deleted != null">deleted = #{deleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysDbTableById" parameterType="Long">
+        delete from sys_db_table where id = #{id}
+    </delete>
+
+    <delete id="deleteSysDbTableByIds" parameterType="String">
+        delete from sys_db_table where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectIsExistTableName" parameterType="String" resultType="java.lang.Integer">
+        select count(*)
+        from information_schema.TABLES
+        where TABLE_SCHEMA =(select database() ) and TABLE_NAME = #{tableName}
+    </select>
+
+    <update id="createTable" parameterType="string">
+        ${sql}
+	</update>
+
+</mapper>

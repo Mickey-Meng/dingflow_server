@@ -1,43 +1,35 @@
 package com.snow.web.controller.system;
 
-import java.util.List;
-
-import com.dingtalk.api.response.OapiCallBackGetCallBackFailedResultResponse;
+import com.snow.common.annotation.Log;
+import com.snow.common.core.controller.BaseController;
+import com.snow.common.core.domain.AjaxResult;
+import com.snow.common.core.page.TableDataInfo;
+import com.snow.common.enums.BusinessType;
 import com.snow.common.enums.DingTalkListenerType;
-import com.snow.dingtalk.service.impl.CallBackServiceImpl;
+import com.snow.common.utils.poi.ExcelUtil;
 import com.snow.framework.util.ShiroUtils;
+import com.snow.system.domain.DingtalkCallBack;
 import com.snow.system.event.SyncEvent;
+import com.snow.system.service.IDingtalkCallBackService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import com.snow.common.annotation.Log;
-import com.snow.common.enums.BusinessType;
-import com.snow.system.domain.DingtalkCallBack;
-import com.snow.system.service.IDingtalkCallBackService;
-import com.snow.common.core.controller.BaseController;
-import com.snow.common.core.domain.AjaxResult;
-import com.snow.common.utils.poi.ExcelUtil;
-import com.snow.common.core.page.TableDataInfo;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 回调事件Controller
- * 
+ *   详情参考：https://open.dingtalk.com/document/orgapp-server/callback-overview
  * @author qimingjin
  * @date 2020-11-02
  */
 @Controller
 @RequestMapping("/system/back")
-public class DingtalkCallBackController extends BaseController
-{
+public class DingtalkCallBackController extends BaseController {
     private String prefix = "system/back";
 
     @Autowired
@@ -73,8 +65,7 @@ public class DingtalkCallBackController extends BaseController
     @Log(title = "回调事件", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(DingtalkCallBack dingtalkCallBack)
-    {
+    public AjaxResult export(DingtalkCallBack dingtalkCallBack) {
         List<DingtalkCallBack> list = dingtalkCallBackService.selectDingtalkCallBackList(dingtalkCallBack);
         ExcelUtil<DingtalkCallBack> util = new ExcelUtil<DingtalkCallBack>(DingtalkCallBack.class);
         return util.exportExcel(list, "back");
@@ -96,10 +87,8 @@ public class DingtalkCallBackController extends BaseController
     @Log(title = "回调事件", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(DingtalkCallBack dingtalkCallBack)
-    {
+    public AjaxResult addSave(DingtalkCallBack dingtalkCallBack) {
         dingtalkCallBack.setCreateBy(ShiroUtils.getLoginName());
-        dingtalkCallBack.setIsSyncDingTalk(false);
         return toAjax(dingtalkCallBackService.insertDingtalkCallBack(dingtalkCallBack));
     }
 
@@ -107,11 +96,10 @@ public class DingtalkCallBackController extends BaseController
     @Log(title = "注册", businessType = BusinessType.INSERT)
     @GetMapping("/register")
     @ResponseBody
-    public AjaxResult register(Long id)
-    {
+    public AjaxResult register(Long id) {
         DingtalkCallBack dingtalkCallBack = dingtalkCallBackService.selectDingtalkCallBackById(id);
-        // 同步到dingding
-        SyncEvent syncEvent = new SyncEvent(dingtalkCallBack, DingTalkListenerType.CALL_BACK_REGISTER);
+        // 发布事件
+        SyncEvent<DingtalkCallBack> syncEvent = new SyncEvent(dingtalkCallBack, DingTalkListenerType.CALL_BACK_REGISTER);
         applicationContext.publishEvent(syncEvent);
         return AjaxResult.success();
     }
@@ -120,8 +108,7 @@ public class DingtalkCallBackController extends BaseController
      * 修改回调事件
      */
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Long id, ModelMap mmap)
-    {
+    public String edit(@PathVariable("id") Long id, ModelMap mmap) {
         DingtalkCallBack dingtalkCallBack = dingtalkCallBackService.selectDingtalkCallBackById(id);
         mmap.put("dingtalkCallBack", dingtalkCallBack);
         return prefix + "/edit";
@@ -134,8 +121,7 @@ public class DingtalkCallBackController extends BaseController
     @Log(title = "回调事件", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(DingtalkCallBack dingtalkCallBack)
-    {
+    public AjaxResult editSave(DingtalkCallBack dingtalkCallBack) {
         dingtalkCallBack.setUpdateBy(ShiroUtils.getLoginName());
         return toAjax(dingtalkCallBackService.updateDingtalkCallBack(dingtalkCallBack));
     }

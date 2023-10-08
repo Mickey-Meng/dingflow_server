@@ -6,13 +6,17 @@ spring:
         druid:
             # 主库数据源
             master:
-                url: jdbc:mysql://127.0.0.1:3306/ry_snow?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
-                username: root
-                password: root
-                driverClassName: com.mysql.cj.jdbc.Driver
-
+                url: jdbc:mysql://rm-bp1j1554xv1qs04295o.mysql.rds.aliyuncs.com:3306/snow3?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+                username: cloud_root
+                password: VXTvn41xh0+92G8KAdvjQct2ZZ+IhRGm2MqTA38kayy48QwO/vSbTnTeTMVQ6s3axHWhQi9l1ZD5dyJUOenyNA==
             # 从库数据源
-            # 初始连接数w
+            slave:
+                # 从数据源开关/默认关闭
+                enabled: false
+                url: 
+                username:
+                password: 
+            # 初始连接数
             initialSize: 5
             # 最小连接池数量
             minIdle: 10
@@ -24,15 +28,15 @@ spring:
             timeBetweenEvictionRunsMillis: 60000
             # 配置一个连接在池中最小生存的时间，单位是毫秒
             minEvictableIdleTimeMillis: 300000
-            # 配置一个连接在池中最大生存的时间  ，单位是毫秒
+            # 配置一个连接在池中最大生存的时间，单位是毫秒
             maxEvictableIdleTimeMillis: 900000
             # 配置检测连接是否有效
-            validationQuery: SELECT 1
+            validationQuery: SELECT 1 FROM DUAL
             testWhileIdle: true
             testOnBorrow: false
             testOnReturn: false
-            connectProperties: config.decrypt=false;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAI5eywxvcrLJY65O9Ml80iBzWYWDYlh396FeNAz0h4Uc6CllmeAOrZfGVN4RcjizJ/17gkwT0KC2kPYRyVE48kMCAwEAAQ==
-            webStatFilter:
+            connectProperties: config.decrypt=true;config.decrypt.key=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAI5eywxvcrLJY65O9Ml80iBzWYWDYlh396FeNAz0h4Uc6CllmeAOrZfGVN4RcjizJ/17gkwT0KC2kPYRyVE48kMCAwEAAQ==
+            webStatFilter: 
                 enabled: true
             statViewServlet:
                 enabled: true
@@ -40,8 +44,8 @@ spring:
                 allow:
                 url-pattern: /druid/*
                 # 控制台管理用户名和密码
-                login-username:
-                login-password:
+                login-username: 
+                login-password: 
             filter:
                 config:
                     # 是否配置加密
@@ -55,4 +59,3 @@ spring:
                 wall:
                     config:
                         multi-statement-allow: true
-

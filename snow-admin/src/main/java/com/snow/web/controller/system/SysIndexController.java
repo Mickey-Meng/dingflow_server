@@ -1,30 +1,35 @@
 package com.snow.web.controller.system;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.snow.common.config.Global;
 import com.snow.common.constant.ShiroConstants;
 import com.snow.common.core.controller.BaseController;
 import com.snow.common.core.domain.AjaxResult;
-import com.snow.common.core.page.PageModel;
 import com.snow.common.core.text.Convert;
+import com.snow.common.enums.MessageReadStatus;
 import com.snow.common.enums.NoticeType;
 import com.snow.common.utils.CookieUtils;
 import com.snow.common.utils.DateUtils;
 import com.snow.common.utils.ServletUtils;
 import com.snow.common.utils.StringUtils;
-import com.snow.flowable.domain.*;
+import com.snow.flowable.domain.FlowGeneralSituationVO;
+import com.snow.flowable.domain.ProcessInstanceDTO;
+import com.snow.flowable.domain.ProcessInstanceVO;
 import com.snow.flowable.service.FlowableService;
-import com.snow.flowable.service.FlowableTaskService;
 import com.snow.framework.shiro.service.SysPasswordService;
 import com.snow.framework.util.ShiroUtils;
 import com.snow.system.domain.*;
-import com.snow.system.service.*;
+import com.snow.system.service.ISysConfigService;
+import com.snow.system.service.ISysMenuService;
+import com.snow.system.service.ISysMessageTransitionService;
+import com.snow.system.service.ISysOperLogService;
 import com.snow.system.service.impl.FinanceAlipayFlowServiceImpl;
 import com.snow.system.service.impl.SysDingtalkSyncLogServiceImpl;
 import com.snow.system.service.impl.SysNoticeServiceImpl;
 import com.snow.system.service.impl.SysOaEmailServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -40,48 +45,32 @@ import java.util.List;
 
 /**
  * 首页 业务处理
- *
+ * 
  * @author snow
  */
 @Controller
+@RequiredArgsConstructor
 public class SysIndexController extends BaseController {
-    @Autowired
-    private ISysMenuService menuService;
 
-    @Autowired
-    private ISysConfigService configService;
+    private final ISysMenuService menuService;
 
+    private final ISysConfigService configService;
 
-    @Autowired
-    private SysPasswordService passwordService;
+    private final SysPasswordService passwordService;
 
-    @Autowired
-    private FlowableService flowableService;
+    private final FlowableService flowableService;
 
-    @Autowired
-    private FlowableTaskService flowableTaskService;
+    private final SysDingtalkSyncLogServiceImpl syncLogService;
 
-    @Autowired
-    private SysDingtalkSyncLogServiceImpl sysDingtalkSyncLogService;
+    private final FinanceAlipayFlowServiceImpl financeAlipayFlowService;
 
-    @Autowired
-    private FinanceAlipayFlowServiceImpl financeAlipayFlowService;
+    private final ISysOperLogService operLogService;
 
-    @Autowired
-    private ISysOperLogService operLogService;
+    private final ISysMessageTransitionService sysMessageTransitionService;
 
-    @Autowired
-    private ISysMessageTransitionService sysMessageTransitionService;
+    private final SysOaEmailServiceImpl sysOaEmailService;
 
-    @Autowired
-    private ISysDingRuTaskService sysDingRuTaskService;
-
-
-    @Autowired
-    private SysOaEmailServiceImpl sysOaEmailService;
-
-    @Autowired
-    private SysNoticeServiceImpl sysNoticeService;
+    private final SysNoticeServiceImpl sysNoticeService;
 
     @Value("${is.notice}")
     private Boolean isNotice;
@@ -90,8 +79,6 @@ public class SysIndexController extends BaseController {
     // 系统首页
     @GetMapping("/index")
     public String index(ModelMap mmap) {
-
-
         // 取身份信息
         SysUser user = ShiroUtils.getSysUser();
         // 根据用户id取出菜单
@@ -102,35 +89,34 @@ public class SysIndexController extends BaseController {
         mmap.put("skinName", configService.selectConfigByKey("sys.index.skinName"));
         mmap.put("ignoreFooter", configService.selectConfigByKey("sys.index.ignoreFooter"));
         mmap.put("copyrightYear", Global.getCopyrightYear());
-        mmap.put("demoEnabled", Global.isDemoEnabled());
+        mmap.put("demoEnabled",  Global.isDemoEnabled());
         mmap.put("isDefaultModifyPwd", initPasswordIsModify(user.getPwdUpdateDate()));
         mmap.put("isPasswordExpired", passwordIsExpiration(user.getPwdUpdateDate()));
 
-        mmap.put("isNewNotice", isNotice);
-        List<SysOaEmail> myNoReadOaEmailList = sysOaEmailService.getMyNoReadOaEmailList(String.valueOf(user.getUserId()));
-        mmap.put("emailListSize", myNoReadOaEmailList.size());
+        mmap.put("isNewNotice",isNotice);
+        List<SysOaEmailDTO> myNoReadOaEmailList = sysOaEmailService.getMyNoReadOaEmailList(ShiroUtils.getUserIdAsString());
+        mmap.put("emailListSize",myNoReadOaEmailList.size());
         //如果大于三条只取前三条记录
-        if (CollectionUtils.isNotEmpty(myNoReadOaEmailList) && myNoReadOaEmailList.size() > 3) {
-            myNoReadOaEmailList = myNoReadOaEmailList.subList(0, 3);
+        if(CollectionUtils.isNotEmpty(myNoReadOaEmailList)&&myNoReadOaEmailList.size()>5){
+            myNoReadOaEmailList=myNoReadOaEmailList.subList(0,5);
         }
+        mmap.put("emailList",myNoReadOaEmailList);
 
-        mmap.put("emailList", myNoReadOaEmailList);
-
-
-        SysMessageTransition sysMessageTransition = new SysMessageTransition();
+        SysMessageTransition sysMessageTransition=new SysMessageTransition();
         sysMessageTransition.setConsumerId(String.valueOf(user.getUserId()));
         sysMessageTransition.setMessageStatus(0L);
-        sysMessageTransition.setMessageReadStatus(0L);
+        sysMessageTransition.setMessageReadStatus(MessageReadStatus.NO_READ.getCode());
         sysMessageTransition.setOrderBy("update_time desc");
         List<SysMessageTransition> sysMessageTransitions = sysMessageTransitionService.selectSysMessageTransitionList(sysMessageTransition);
+        mmap.put("sysMessageSize",sysMessageTransitions.size());
         //如果大于五条只取前五条记录
-        if (CollectionUtils.isNotEmpty(sysMessageTransitions) && sysMessageTransitions.size() > 5) {
-            sysMessageTransitions = sysMessageTransitions.subList(0, 5);
+        if(CollUtil.isNotEmpty(sysMessageTransitions)&&sysMessageTransitions.size()>5){
+            sysMessageTransitions=sysMessageTransitions.subList(0,5);
 
         }
         SysMessageTransition.init(sysMessageTransitions);
-        mmap.put("sysMessageList", sysMessageTransitions);
-        mmap.put("sysMessageSize", sysMessageTransitions.size());
+        mmap.put("sysMessageList",sysMessageTransitions);
+
         // 菜单导航显示风格
         String menuStyle = configService.selectConfigByKey("sys.index.menuStyle");
         // 移动端，默认使左侧导航菜单，否则取默认配置
@@ -149,37 +135,18 @@ public class SysIndexController extends BaseController {
     }
 
 
-    // 系统介绍
+    // 系统主页
     @GetMapping("/system/main")
     public String main(ModelMap mmap) {
-        SysUser sysUser = ShiroUtils.getSysUser();
         mmap.put("version", Global.getVersion());
         //流程概况
-        TaskBaseDTO taskBaseDTO = new TaskBaseDTO();
-        taskBaseDTO.setPageNum(1);
-        taskBaseDTO.setPageSize(300);
-        PageModel<TaskVO> taskList = flowableTaskService.findTasksByUserId(String.valueOf(sysUser.getUserId()), taskBaseDTO);
-        FlowGeneralSituationVO flowGeneralSituation = flowableService.getFlowGeneralSituation(String.valueOf(sysUser.getUserId()));
-        flowGeneralSituation.setTodoTaskNum(taskList.getTotalCount());
-        mmap.put("flowGeneralSituation", flowGeneralSituation);
-        SysNotice sysNotice = new SysNotice();
+        FlowGeneralSituationVO flowGeneralSituation = flowableService.getFlowGeneralSituation(ShiroUtils.getUserIdAsString());
+        mmap.put("flowGeneralSituation",flowGeneralSituation);
+        SysNotice sysNotice=new SysNotice();
         sysNotice.setStatus("0");
         sysNotice.setNoticeType(NoticeType.NOTICE_TYPE.getCode());
         List<SysNotice> sysNotices = sysNoticeService.selectNoticeList(sysNotice);
-        mmap.put("sysNotices", sysNotices);
-        if (CollUtil.isNotEmpty(sysNotices) && sysNotices.size() > 5) {
-            mmap.put("sysNoticeList", sysNotices.subList(0, 5));
-        } else {
-            mmap.put("sysNoticeList", sysNotices);
-        }
-        mmap.put("sysNoticeListSize", sysNotices.size());
-        HistoricTaskInstanceDTO historicTaskInstanceDTO = new HistoricTaskInstanceDTO();
-        historicTaskInstanceDTO.setPageNum(1);
-        historicTaskInstanceDTO.setPageSize(5);
-        historicTaskInstanceDTO.setUserId(String.valueOf(sysUser.getUserId()));
-        PageModel<HistoricTaskInstanceVO> historicTaskInstance = flowableTaskService.getHistoricTaskInstance(historicTaskInstanceDTO);
-        mmap.put("historicTaskInstanceList", historicTaskInstance.getPagedRecords());
-        mmap.put("historicTaskInstanceSize", historicTaskInstance.getPagedRecords().size());
+        mmap.put("sysNotices",sysNotices);
         return "main";
     }
 
@@ -196,7 +163,7 @@ public class SysIndexController extends BaseController {
     @ResponseBody
     public AjaxResult unlockscreen(String password) {
         SysUser user = ShiroUtils.getSysUser();
-        if (StringUtils.isNull(user)) {
+        if (ObjectUtil.isNull(user)) {
             return AjaxResult.error("服务器超时，请重新登陆");
         }
         if (passwordService.matches(user, password)) {
@@ -208,7 +175,8 @@ public class SysIndexController extends BaseController {
 
     // 切换主题
     @GetMapping("/system/switchSkin")
-    public String switchSkin() {
+    public String switchSkin()
+    {
         return "skin";
     }
 
@@ -217,6 +185,7 @@ public class SysIndexController extends BaseController {
     public void menuStyle(@PathVariable String style, HttpServletResponse response) {
         CookieUtils.setCookie(response, "nav-style", style);
     }
+
 
 
     // 检查初始密码是否提醒修改
@@ -241,7 +210,6 @@ public class SysIndexController extends BaseController {
 
     /**
      * 数据大屏  （后面改成接口的形式获取）
-     *
      * @param mmap
      * @return
      */
@@ -250,25 +218,31 @@ public class SysIndexController extends BaseController {
         SysUser user = ShiroUtils.getSysUser();
         //流程概况
         FlowGeneralSituationVO flowGeneralSituation = flowableService.getFlowGeneralSituation(String.valueOf(user.getUserId()));
-        mmap.put("flowGeneralSituation", flowGeneralSituation);
+        mmap.put("flowGeneralSituation",flowGeneralSituation);
         //钉钉概况
-        SysDingtalkSyncLog sysDingtalkSyncLog = new SysDingtalkSyncLog();
-        SysDingtalkSyncSituationVO sysDingtalkSyncSituation = sysDingtalkSyncLogService.getSysDingtalkSyncSituation(sysDingtalkSyncLog);
-        mmap.put("DingTalkSituation", sysDingtalkSyncSituation);
+        SysDingtalkSyncLog sysDingtalkSyncLog=new SysDingtalkSyncLog();
+        SysDingtalkSyncSituationVO sysDingtalkSyncSituation = syncLogService.getSysDingtalkSyncSituation(sysDingtalkSyncLog);
+        mmap.put("DingTalkSituation",sysDingtalkSyncSituation);
         //账单概况
         FinanceBillSituationVO financeAlipayFlowSituation = financeAlipayFlowService.getFinanceAlipayFlowSituation(user.getUserId());
-        mmap.put("financeBillSituation", financeAlipayFlowSituation);
+        mmap.put("financeBillSituation",financeAlipayFlowSituation);
         //暂时先存放操作失败的日志
-        SysOperLog sysOperLog = new SysOperLog();
+        SysOperLog sysOperLog=new SysOperLog();
         sysOperLog.setStatus(1);
         List<SysOperLog> sysOperLogs = operLogService.selectOperLogList(sysOperLog);
-        mmap.put("sysOperLogs", sysOperLogs);
-        ProcessInstanceDTO processInstanceDTO = new ProcessInstanceDTO();
+        mmap.put("sysOperLogs",sysOperLogs);
+        ProcessInstanceDTO processInstanceDTO=new ProcessInstanceDTO();
         //获取当天发起的流程
-        processInstanceDTO.setStartedAfter(DateUtils.parseDate(DateUtils.getDate() + "00:00:00"));
-        processInstanceDTO.setStartedBefore(DateUtils.parseDate(DateUtils.getDate() + "23:59:59"));
+        processInstanceDTO.setStartedAfter(DateUtils.parseDate(DateUtils.getDate()+"00:00:00"));
+        processInstanceDTO.setStartedBefore(DateUtils.parseDate(DateUtils.getDate()+"23:59:59"));
+        processInstanceDTO.setStartedUserId(user.getUserId().toString());
         List<ProcessInstanceVO> historicProcessInstanceList = flowableService.getHistoricProcessInstanceList(processInstanceDTO);
-        mmap.put("historicProcessInstanceList", historicProcessInstanceList);
+        mmap.put("historicProcessInstanceList",historicProcessInstanceList);
         return "big_screen";
     }
+
+    /*@GetMapping("/test")
+    public String test(ModelMap mmap) {
+        return "system/notice/test";
+    }*/
 }

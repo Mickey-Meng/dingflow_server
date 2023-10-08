@@ -10,17 +10,18 @@
             <div class="tabs-container">
 
                 <div class="tabs-left">
+
                     <ul class="nav nav-tabs">
                         <li class="active">
-                            <a data-toggle="tab" href="#tab-1">  待处理   <span class="label label-info pull-right"></span></a>
+                            <a data-toggle="tab" href="#tab-1"> <span class="font-bold text-info"><i class="fa fa-tasks"></i>&nbsp;  待处理 </span>   <span class="label label-info pull-right"></span></a>
 
                         </li>
                         <li class="">
-                            <a data-toggle="tab" href="#tab-2">  我创建  <span class="label label-info pull-right" ></span></a>
+                            <a data-toggle="tab" href="#tab-2"> <span class="font-bold text-info"><i class="fa fa-paint-brush"></i>&nbsp;   我创建 </span> <span class="label label-info pull-right" ></span></a>
 
                         </li>
                         <li class="">
-                            <a data-toggle="tab" href="#tab-3"> 已处理  <span class="label label-info pull-right" ></span></a>
+                            <a data-toggle="tab" href="#tab-3"><span class="font-bold text-info"><i class="fa fa-map"></i>&nbsp;   已处理 </span>  <span class="label label-info pull-right" ></span></a>
                         </li>
                     </ul>
 
@@ -41,7 +42,7 @@
                                                 </li>
                                                 <li>
                                                     <label>任务状态：</label>
-                                                    <select name="taskStatus"  id="myTaskStatus" th:with="type=${@dict.getType('ding_task_status')}">
+                                                    <select name="taskStatus"  id="taskExecuteStatus" th:with="type=${@dict.getType('ding_task_status')}">
                                                         <option value="">所有</option>
                                                         <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                                                     </select>
@@ -55,11 +56,6 @@
                                     </form>
                                 </div>
 
-                                <div class="btn-group-sm" id="toolbar1" role="group">
-                                    <a class="btn btn-warning" onclick="$.table.exportExcel('formId3')" shiro:hasPermission="system:task:export">
-                                        <i class="fa fa-download"></i> 导出
-                                    </a>
-                                </div>
                                 <div class="col-sm-12 select-table table-striped">
                                     <table id="bootstrap-table3"></table>
                                 </div>
@@ -92,7 +88,7 @@
                                     </form>
                                 </div>
                                 <div class="btn-group-sm" id="toolbar2" role="group">
-                                    <a class="btn btn-success" onclick="$.operate.addTab()" shiro:hasPermission="system:task:add">
+                                    <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:task:add">
                                         <i class="fa fa-plus"></i> 添加
                                     </a>
                                     <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:task:export">
@@ -188,11 +184,19 @@
                         return row.sysOaTask.taskName;
                     }
                 },
+
                 {
                     field: 'taskType',
                     title: '任务类型',
                     formatter: function(value, row, index) {
                         return $.table.selectDictLabel(taskTypeDatas, row.sysOaTask.taskType);
+                    }
+                },
+                {
+                    field: 'taskExecuteStatus',
+                    title: '执行状态',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(taskStatusDatas, value);
                     }
                 },
                 {
@@ -218,10 +222,10 @@
                     align: 'center',
                     formatter: function(value, row, index) {
                         var actions = [];
-                        if(row.taskExecuteStatus=='RUNNING') {
+                        if(row.taskExecuteStatus=='NEW') {
                             actions.push('<a class="btn btn-info btn-xs ' + startFlag + '" href="javascript:void(0)" onclick="startTask(\''+row.id+'\')"><i class="fa fa-hourglass-start"></i>开始</a> ');
                         }
-                        if(row.taskExecuteStatus=='PROCESSING') {
+                        if(row.taskExecuteStatus=='RUNNING') {
                             actions.push('<a class="btn btn-success btn-xs ' + handleFlag + '" href="javascript:void(0)" onclick="$.operate.handle(\'' + row.id + '\')"><i class="fa fa-edit"></i>处理</a>');
                         }
                         return actions.join('');
@@ -232,9 +236,8 @@
         function queryParams(params) {
             var search = $.table.queryParams(params);
             search.taskNo = $("#myTaskNo").val();
-            search.taskStatus = $("#myTaskStatus").val();
+            search.taskExecuteStatus = $("#taskExecuteStatus").val();
             return search;
-
         }
 
 
@@ -251,7 +254,6 @@
             onExpandRow : function(index, row, $detail) {
                 initChildTable(index, row, $detail);
             },
-
             modalName: "我创建",
             columns: [{
                 checkbox: true
@@ -263,22 +265,25 @@
                 },
                 {
                     field: 'taskName',
-                    title: '任务名称'
+                    title: '任务名称',
+                    formatter: function(value, row, index) {
+                        return $.table.tooltip(value);
+                    }
                 },
                 {
                     field: 'taskContent',
                     title: '任务内容',
                     formatter: function(value, row, index) {
-                        return row.taskContent.substring(0,20)+"...";
+                        return $.table.tooltip(value);
                     }
                 },
-           /*     {
+                {
                     field: 'taskStatus',
                     title: '任务状态',
                     formatter: function(value, row, index) {
                         return $.table.selectDictLabel(taskStatusDatas, value);
                     }
-                },*/
+                },
                 {
                     field: 'taskType',
                     title: '任务类型',
@@ -287,17 +292,13 @@
                     }
                 },
                 {
-                    field: 'taskSource',
-                    title: '任务来源'
-                },
-                {
                     title: '操作',
                     align: 'center',
                     formatter: function(value, row, index) {
                         var actions = [];
                         actions.push('<a class="btn btn-info btn-xs " href="javascript:void(0)" onclick="$.operate.detail(\'' + row.taskNo + '\')"><i class="fa fa-eye"></i>详情</a> ');
                         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.taskNo + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.taskNo + '\')"><i class="fa fa-remove"></i>删除</a>');
+/*                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.taskNo + '\')"><i class="fa fa-remove"></i>删除</a>');*/
                         return actions.join('');
                     }
                 }]
@@ -335,7 +336,7 @@
                     field: 'taskName',
                     title: '任务名称',
                     formatter: function(value, row, index) {
-                        return row.sysOaTask.taskName;
+                        return $.table.tooltip(row.sysOaTask.taskName) ;
                     }
                 },
                 {
@@ -414,7 +415,7 @@
                     field: 'taskNo',
                     title: '任务编号',
                     formatter: function(value, row, index) {
-                        return row.taskNo.substring(0,5)+"...";
+                        return $.table.tooltip(row.taskNo);
                     }
                 },
                 {

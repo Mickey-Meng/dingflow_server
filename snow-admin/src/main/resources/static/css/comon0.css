@@ -92,14 +92,10 @@ a:hover{ color:#06c; text-decoration: none!important}
 #echarts8:before,
 #echarts10:before { position:absolute; content: "23124"; width: 100%; text-align: center; bottom: .15rem; color: #fff; opacity: .7; font-size: .18rem;}
 
-/*#echarts1:before{ content: "成功数"}
+#echarts1:before{ content: "成功数"}
 #echarts9:before{ content: "失败数"}
 #echarts2:before{ content: "成功占比"}
-#echarts3:before{ content: "失败占比"}*/
-#echarts1:before{ content: "合格数"}
-#echarts9:before{ content: "不良数"}
-#echarts2:before{ content: "合格占比"}
-#echarts3:before{ content: "不良占比"}
+#echarts3:before{ content: "失败占比"}
 
 #echarts6:before{ content: "出勤比"}
 #echarts7:before{ content: "缺勤比"}

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.snow.system.mapper.SysDbTableFieldMapper">
+
+    <resultMap type="SysDbTableField" id="SysDbTableFieldResult">
+            <result property="id"    column="id"    />
+            <result property="dbTableId"    column="db_table_id"    />
+            <result property="fieldName"    column="field_name"    />
+            <result property="fieldIsPrimaryKey"    column="field_is_primary_key"    />
+            <result property="fieldType"    column="field_type"    />
+            <result property="fieldLength"    column="field_length"    />
+            <result property="fieldDecimal"    column="field_decimal"    />
+            <result property="fieldIsNull"    column="field_is_null"    />
+            <result property="fieldDefaultValue"    column="field_default_value"    />
+            <result property="remark"    column="remark"    />
+            <result property="createBy"    column="create_by"    />
+            <result property="createTime"    column="create_time"    />
+            <result property="updateBy"    column="update_by"    />
+            <result property="updateTime"    column="update_time"    />
+            <result property="deleted"    column="deleted"    />
+    </resultMap>
+
+    <sql id="selectSysDbTableFieldVo">
+        select id, db_table_id, field_name, field_is_primary_key, field_type, field_length, field_decimal, field_is_null, field_default_value, remark, create_by, create_time, update_by, update_time, deleted from sys_db_table_field
+    </sql>
+
+    <select id="selectSysDbTableFieldList" parameterType="SysDbTableField" resultMap="SysDbTableFieldResult">
+        <include refid="selectSysDbTableFieldVo"/>
+        <where>
+                <if test="dbTableId != null "> and db_table_id = #{dbTableId}</if>
+                <if test="fieldName != null  and fieldName != ''"> and field_name like concat('%', #{fieldName}, '%')</if>
+                <if test="fieldIsPrimaryKey != null "> and field_is_primary_key = #{fieldIsPrimaryKey}</if>
+                <if test="fieldType != null  and fieldType != ''"> and field_type = #{fieldType}</if>
+                <if test="fieldLength != null "> and field_length = #{fieldLength}</if>
+                <if test="fieldDecimal != null "> and field_decimal = #{fieldDecimal}</if>
+                <if test="fieldIsNull != null "> and field_is_null = #{fieldIsNull}</if>
+                <if test="fieldDefaultValue != null  and fieldDefaultValue != ''"> and field_default_value = #{fieldDefaultValue}</if>
+                <if test="deleted != null "> and deleted = #{deleted}</if>
+        </where>
+    </select>
+
+    <select id="selectSysDbTableFieldById" parameterType="Long" resultMap="SysDbTableFieldResult">
+            <include refid="selectSysDbTableFieldVo"/>
+            where id = #{id}
+    </select>
+
+    <insert id="insertSysDbTableField" parameterType="SysDbTableField" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_db_table_field
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+              <if test="dbTableId != null">db_table_id,</if>
+              <if test="fieldName != null and fieldName != ''">field_name,</if>
+              <if test="fieldIsPrimaryKey != null">field_is_primary_key,</if>
+              <if test="fieldType != null">field_type,</if>
+              <if test="fieldLength != null">field_length,</if>
+              <if test="fieldDecimal != null">field_decimal,</if>
+              <if test="fieldIsNull != null">field_is_null,</if>
+              <if test="fieldDefaultValue != null">field_default_value,</if>
+              <if test="remark != null">remark,</if>
+              <if test="createBy != null">create_by,</if>
+              <if test="createTime != null">create_time,</if>
+              <if test="updateBy != null">update_by,</if>
+              <if test="updateTime != null">update_time,</if>
+              <if test="deleted != null">deleted,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+              <if test="dbTableId != null">#{dbTableId},</if>
+              <if test="fieldName != null and fieldName != ''">#{fieldName},</if>
+              <if test="fieldIsPrimaryKey != null">#{fieldIsPrimaryKey},</if>
+              <if test="fieldType != null">#{fieldType},</if>
+              <if test="fieldLength != null">#{fieldLength},</if>
+              <if test="fieldDecimal != null">#{fieldDecimal},</if>
+              <if test="fieldIsNull != null">#{fieldIsNull},</if>
+              <if test="fieldDefaultValue != null">#{fieldDefaultValue},</if>
+              <if test="remark != null">#{remark},</if>
+              <if test="createBy != null">#{createBy},</if>
+              <if test="createTime != null">#{createTime},</if>
+              <if test="updateBy != null">#{updateBy},</if>
+              <if test="updateTime != null">#{updateTime},</if>
+              <if test="deleted != null">#{deleted},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysDbTableField" parameterType="SysDbTableField">
+        update sys_db_table_field
+        <trim prefix="SET" suffixOverrides=",">
+              <if test="dbTableId != null">db_table_id = #{dbTableId},</if>
+              <if test="fieldName != null and fieldName != ''">field_name = #{fieldName},</if>
+              <if test="fieldIsPrimaryKey != null">field_is_primary_key = #{fieldIsPrimaryKey},</if>
+              <if test="fieldType != null">field_type = #{fieldType},</if>
+              <if test="fieldLength != null">field_length = #{fieldLength},</if>
+              <if test="fieldDecimal != null">field_decimal = #{fieldDecimal},</if>
+              <if test="fieldIsNull != null">field_is_null = #{fieldIsNull},</if>
+              <if test="fieldDefaultValue != null">field_default_value = #{fieldDefaultValue},</if>
+              <if test="remark != null">remark = #{remark},</if>
+              <if test="createBy != null">create_by = #{createBy},</if>
+              <if test="createTime != null">create_time = #{createTime},</if>
+              <if test="updateBy != null">update_by = #{updateBy},</if>
+              <if test="updateTime != null">update_time = #{updateTime},</if>
+              <if test="deleted != null">deleted = #{deleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysDbTableFieldById" parameterType="Long">
+        delete from sys_db_table_field where id = #{id}
+    </delete>
+
+    <delete id="deleteSysDbTableFieldByIds" parameterType="String">
+        delete from sys_db_table_field where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
