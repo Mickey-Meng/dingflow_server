@@ -1,5 +1,7 @@
 package com.snow.dingtalk.common;
 
+import com.dingtalk.api.response.OapiAiMtTranslateResponse;
+
 /**
  * @author qimingjin
  * @Title:
@@ -33,6 +35,12 @@ public class BaseConstantUrl {
     public static final String GET_USERINFO_BY_DEPT=  "https://oapi.dingtalk.com/topapi/v2/user/list";
 
     /**
+     * 根据手机号查询用户
+     */
+    public static final String GET_USERINFO_BY_MOBILE=  " https://oapi.dingtalk.com/topapi/v2/user/getbymobile";
+
+
+    /**
      * 获取用户UNION_ID
      */
     public static final String GET_USER_UNION_ID= "https://oapi.dingtalk.com/topapi/user/getbyunionid";
@@ -46,10 +54,23 @@ public class BaseConstantUrl {
      * 获取token url
      */
     public static final String GET_TOKEN_URL="https://oapi.dingtalk.com/gettoken";
+
     /**
      * 创建部门
      */
+    @Deprecated
     public static final String DEPARTMENT_CREATE="https://oapi.dingtalk.com/department/create";
+
+    /**
+     * 获取钉钉部门信息
+     */
+    @Deprecated
+    public static final String DEPARTMENT_LIST="https://oapi.dingtalk.com/department/list";
+
+    /**
+     * 创建部门V2
+     */
+    public static final String DEPARTMENT_CREATE_V2="https://oapi.dingtalk.com/topapi/v2/department/create";
     /**
      * 更新部门
      */
@@ -64,9 +85,10 @@ public class BaseConstantUrl {
     public static final String GET_DEPARTMENT_BY_ID="https://oapi.dingtalk.com/topapi/v2/department/get";
 
     /**
-     * 获取钉钉部门信息
+     * 新版获取部门列表
      */
-    public static final String DEPARTMENT_LIST="https://oapi.dingtalk.com/department/list";
+    public static final String DEPARTMENT_LIST_V2="https://oapi.dingtalk.com/topapi/v2/department/listsub";
+
 
     /**
      * 创建流程
@@ -83,7 +105,7 @@ public class BaseConstantUrl {
     /**
      * 通过ID获取我的代办
      */
-    public static final String GET_WORK_RECORD_USER_ID_="https://oapi.dingtalk.com/topapi/workrecord/getbyuserid";
+    public static final String GET_WORK_RECORD_USER_ID="https://oapi.dingtalk.com/topapi/workrecord/getbyuserid";
     /**
      * 更新待办
      */
@@ -230,6 +252,19 @@ public class BaseConstantUrl {
      * 获取考勤记录详情
      */
     public static final String ATTENDANCE_RECORD_RECORD="https://oapi.dingtalk.com/attendance/listRecord";
+
+    /**
+     * 文本翻译
+     */
+    public static final String AI_TRANSLATE="https://oapi.dingtalk.com/topapi/ai/mt/translate";
+
+    /**
+     * ocr文字识别
+     */
+    public static final String AI_OCR_RECOGNIZE="https://oapi.dingtalk.com/topapi/ocr/structured/recognize";
+
+
+    //*********************************************************直播相关
 
 
 }

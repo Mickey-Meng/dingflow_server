@@ -1,6 +1,10 @@
 package com.snow.dingtalk.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.aliyun.dingtalkworkflow_1_0.models.ExecuteProcessInstanceHeaders;
+import com.aliyun.dingtalkworkflow_1_0.models.ExecuteProcessInstanceRequest;
+import com.aliyun.dingtalkworkflow_1_0.models.ExecuteProcessInstanceResponse;
+import com.aliyun.teautil.models.RuntimeOptions;
 import com.dingtalk.api.DefaultDingTalkClient;
 import com.dingtalk.api.DingTalkClient;
 import com.dingtalk.api.request.*;
@@ -22,10 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.dingtalk.api.request.OapiProcessWorkrecordCreateRequest.*;
+import static com.dingtalk.api.request.OapiProcessWorkrecordCreateRequest.FormComponentValueVo;
+import static com.dingtalk.api.request.OapiProcessWorkrecordCreateRequest.SaveFakeProcessInstanceRequest;
 
 /**
  * @program: snow
@@ -161,7 +165,37 @@ public class DingOfficialFlowServiceImpl extends BaseService implements DingOffi
             log.error("执行审批操作带附件executeProcessInstance异常：{}", e.getMessage());
             throw new SyncDataException(JSON.toJSONString(req), e.getErrMsg());
         }
+    }
 
+    @Override
+    public Boolean executeProcessInstanceV2(FlowExecuteTaskRequest flowExecuteTaskRequest){
+        ExecuteProcessInstanceHeaders executeProcessInstanceHeaders = new ExecuteProcessInstanceHeaders();
+        executeProcessInstanceHeaders.xAcsDingtalkAccessToken = getDingTalkTokenV2();
+        ExecuteProcessInstanceRequest executeProcessInstanceRequest = new ExecuteProcessInstanceRequest()
+                .setProcessInstanceId(flowExecuteTaskRequest.getProcessInstanceId())
+                .setRemark(flowExecuteTaskRequest.getRemark())
+                .setResult(flowExecuteTaskRequest.getResult())
+                .setActionerUserId(flowExecuteTaskRequest.getActionerUserid())
+                .setTaskId(flowExecuteTaskRequest.getTaskId());
+        if(StringUtils.isNotNull(flowExecuteTaskRequest.getFile().getAttachments())){
+            List<ExecuteProcessInstanceRequest.ExecuteProcessInstanceRequestFileAttachments> attachments = BeanUtils.transformList(flowExecuteTaskRequest.getFile().getAttachments(), ExecuteProcessInstanceRequest.ExecuteProcessInstanceRequestFileAttachments.class);
+            ExecuteProcessInstanceRequest.ExecuteProcessInstanceRequestFile file = new ExecuteProcessInstanceRequest.ExecuteProcessInstanceRequestFile();
+            file.setPhotos(flowExecuteTaskRequest.getFile().getPhotos());
+            file.setAttachments(attachments);
+            executeProcessInstanceRequest.setFile(file);
+        }
+
+        try {
+            ExecuteProcessInstanceResponse executeProcessInstanceResponse = createWorkFlowClient().executeProcessInstanceWithOptions(executeProcessInstanceRequest, executeProcessInstanceHeaders, new RuntimeOptions());
+            if (!executeProcessInstanceResponse.getBody().getSuccess()) {
+                throw new SyncDataException(JSON.toJSONString(executeProcessInstanceRequest), "接口调用失败");
+            }
+            return executeProcessInstanceResponse.getBody().getResult();
+        }catch (Exception e) {
+            log.error("获取审批实例详情getProcessInstanceDetail异常：{}", e.getMessage());
+            log.error(e.getMessage(),e);
+            throw new SyncDataException(JSON.toJSONString(executeProcessInstanceRequest), e.getMessage());
+        }
     }
 
 

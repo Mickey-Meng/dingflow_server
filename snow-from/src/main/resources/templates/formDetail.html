@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <th:block th:include="include :: header('自定义页面展示')"/>
-    <link rel="stylesheet" href="./layui/css/layui.css"/>
-    <link rel="stylesheet" href="./ayq/modules/formDesigner.css"/>
-    <link rel="stylesheet" href="./ayq/modules/cron.css"/>
-    <link rel="stylesheet" href="./ayq/modules/labelGeneration.css"/>
-    <link rel="stylesheet" href="./ayq/modules/formPreview.css"/>
+    <th:block th:include="include :: header('自定义页面展示')" />
+    <link rel="stylesheet" href="./layui/css/layui.css" />
+    <link rel="stylesheet" href="./ayq/modules/formDesigner.css" />
+    <link rel="stylesheet" href="./ayq/modules/cron.css" />
+    <link rel="stylesheet" href="./ayq/modules/labelGeneration.css" />
+    <link rel="stylesheet" href="./ayq/modules/formPreview.css" />
 </head>
 
-<body>
-<div>
+<body >
+<div >
     <input type="hidden" name="id" id="id" th:value="${id}">
-    <input type="hidden" name="formId" id="formId" th:value="${formId}">
-    <input type="hidden" name="formDetailsId" id="formDetailsId" th:value="${formDetailsId}">
     <div style="margin: 20px 20px;padding: 20px 20px;border: 1px solid #009688;">
         <div style="margin-top: 20px" class="layui-row">
             <h2 th:text="${name}" style="text-align: center"></h2>
@@ -24,7 +22,7 @@
             </div>
         </div>
         <br/>
-        <div id="testdemo" style="margin-top: 20px">
+        <div  id="testdemo" style="margin-top: 20px">
 
         </div>
     </div>
@@ -39,122 +37,39 @@
 </div>
 <script th:src="@{/js/jquery.min.js}"></script>
 <script type="text/javascript" src="./layui/layui.js"></script>
-<script type="text/javascript" src="./ayq/modules/Sortable/Sortable.js"></script>
+<script type="text/javascript" src="./ayq/modules/Sortable/Sortable.js"> </script>
 <script type="text/javascript" src="./ayq/modules/iceEditor/iceEditor.js"></script>
 <script type="text/javascript" src="./ayq/modules/formPreview.js"></script>
 
 <script>
-
-
-    function hbkrefresh() {
-
-        var aaa = $('.active.menuTab', parent.document);
-
-
-
-
-        var target = $('.RuoYi_iframe[data-id="'+aaa.attr("data-id")+'"]', parent.document);
-        console.log("target")
-        console.log(target)
-
-        var url = target.attr('src');
-        console.log("url=" + url);
-        target.attr('src', url).ready();
-    }
-
-    function GetRequest2(key) {
-        var url = location.search;
-        var theRequest = new Object();
-        if (url.indexOf("?") != -1) {
-            var str = url.substr(1);
-            strs = str.split("&");
-            for (var i = 0; i < strs.length; i++) {
-                theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-            }
-        }
-        var value = theRequest[key];
-        return value;
-    }
-
     var demojs = [];
     //JavaScript代码区域
     layui.config(
-        {base: './ayq/modules/'}).use(['formPreviewDetail', 'form', 'layer', 'upload'], function () {
+        {base: './ayq/modules/'}).use(['formPreviewDetail', 'form','layer','upload'], function () {
         var layer = layui.layer;
         var $ = layui.jquery;
-        var upload = layui.upload;
+        var upload  = layui.upload;
         var index = layui.index;
         var formPreview = layui.formPreviewDetail;
         var form = layui.form;
         var render;
         if (window.localStorage.getItem('layui_form_json') !== undefined) {
-            var id = $("#id").val();
+            var id=$("#id").val();
             var config = {
                 url: "/form/getFormRecordDetail",
                 type: "post",
                 dataType: "json",
                 data: {
-                    "id": id
+                    "id":id
                 },
-                success: function (result) {
+                success: function(result) {
                     if (result.code === 0) {
                         demojs = JSON.parse(result.msg);
                         render = formPreview.render({
                             elem: '#testdemo',
                             data: demojs,
                         });
-                        //监听提交
-                        form.on('submit(demo1)', function (data) {
-                            let formDetailsId = $("#formDetailsId").val();
-                            console.info("======>" + JSON.stringify(data))
-                            var newData = render.getData();
-                            var dataFrom = render.getFormData();
-
-                            console.info("===dataFrom===>" + JSON.stringify(dataFrom))
-                            // 再把数据提交到后台
-                            var formId = $("#formId").val();
-                            var config = {
-                                url: "updateFormRecord",
-                                type: "post",
-                                dataType: "json",
-                                data: {
-                                    "formField": JSON.stringify(dataFrom),
-                                    "formId": formId,
-                                    "formDetailsId": formDetailsId,
-                                    "formData": JSON.stringify(newData)
-                                },
-                                beforeSend: function () {
-                                    layer.msg("正在提交数据，请稍后...", {icon: 1});
-                                },
-                                success: function (result) {
-                                    if (result.code === 0) {
-                                        layer.msg(result.msg, {icon: 1});
-                                        setTimeout(function () {
-
-                                            hbkrefresh();
-                                            //先得到当前iframe层的索引
-                                            var index = parent.layer.getFrameIndex(window.name);
-                                            //再执行关闭
-
-                                            parent.layer.close(index);
-                                        }, 1000)
-                                    } else {
-                                        layer.msg(result.msg, {icon: 2});
-                                    }
-                                }
-                            };
-                            $.ajax(config);
-                            return false;
-                        });
-
-                        var flag_param = GetRequest2("flag");
-                        console.log(flag_param)
-                        if (flag_param == 1 || "1" == flag_param) {
-
-                        } else {
-                            render.globalDisable();
-                        }
-
+                        render.globalDisable();
                         var images = render.getImages();
                         for (var i = 0; i < images.length; i++) {
                             upload.render({
@@ -201,11 +116,11 @@
                                         var tr = $(['<tr id="upload-' + index + '">'
                                             , '<td>' + file.name + '</td>'
                                             , '<td>' + (file.size / 1014).toFixed(1) + 'kb</td>'
-                                            /*            , '<td><div class="layui-progress" lay-filter="progress-demo-' + index + '"><div class="layui-progress-bar" lay-percent=""></div></div></td>'
-                                                        , '<td>'
-                                                        , '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
-                                                        , '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
-                                                        , '</td>'*/
+                                            , '<td><div class="layui-progress" lay-filter="progress-demo-' + index + '"><div class="layui-progress-bar" lay-percent=""></div></div></td>'
+                                            , '<td>'
+                                            , '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+                                            , '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+                                            , '</td>'
                                             , '</tr>'].join(''));
 
                                         //单个重传
@@ -225,15 +140,12 @@
                                     });
                                 }
                                 , done: function (res, index, upload) { //成功的回调
-                                    console.log(res)
-                                    console.log(index)
-                                    console.log(upload)
                                     var that = this;
                                     //if(res.code == 0){ //上传成功
                                     var tr = that.elemList.find('tr#upload-' + index)
                                         , tds = tr.children();
                                     tds.eq(3).html(''); //清空操作
-                                    // delete this.files[index]; //删除文件队列已经上传成功的文件
+                                    delete this.files[index]; //删除文件队列已经上传成功的文件
                                     return;
                                     //}
                                     this.error(index, upload);
@@ -258,9 +170,6 @@
                 }
             };
             $.ajax(config);
-            console.log(render)
-
-
         }
 
     });

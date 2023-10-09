@@ -1,5 +1,6 @@
 package com.snow.dingtalk.sync;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.dingtalk.api.response.OapiV2DepartmentGetResponse;
 import com.snow.common.annotation.DingTalkLog;
@@ -15,11 +16,9 @@ import com.snow.system.domain.SysDept;
 import com.snow.system.mapper.SysDeptMapper;
 import com.snow.system.service.impl.SysDeptServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -32,24 +31,21 @@ import java.util.List;
 @Slf4j
 public class SyncSysDepartmentService implements ISyncSysInfo {
 
-    @Autowired
-    private SysDeptServiceImpl sysDeptService=SpringUtils.getBean(SysDeptServiceImpl.class);
+    private final SysDeptServiceImpl sysDeptService=SpringUtils.getBean(SysDeptServiceImpl.class);
 
-    @Autowired
-    private DepartmentServiceImpl departmentService=SpringUtils.getBean(DepartmentServiceImpl.class);
+    private final DepartmentServiceImpl departmentService=SpringUtils.getBean(DepartmentServiceImpl.class);
 
-    @Resource
-    private SysDeptMapper sysDeptMapper=SpringUtils.getBean(SysDeptMapper.class);
+    private final SysDeptMapper sysDeptMapper=SpringUtils.getBean(SysDeptMapper.class);
 
     @Override
 
     public JSONObject SyncSysInfo(DingTalkListenerType dingTalkListenerType,JSONObject jsonObject) {
         Integer code = dingTalkListenerType.getCode();
-        if(code==DingTalkListenerType.DEPARTMENT_CREATE.getCode()){
+        if(ObjectUtil.equals(code,DingTalkListenerType.DEPARTMENT_CREATE.getCode())){
             insertDepartment(jsonObject);
-        }else if(code==DingTalkListenerType.DEPARTMENT_UPDATE.getCode()){
+        }else if(ObjectUtil.equals(code,DingTalkListenerType.DEPARTMENT_UPDATE.getCode())){
             updateDepartment(jsonObject);
-        }else if(code==DingTalkListenerType.DEPARTMENT_DELETED.getCode()){
+        }else if(ObjectUtil.equals(code,DingTalkListenerType.DEPARTMENT_DELETED.getCode())){
             deleteDepartment(jsonObject);
         }
         return null;

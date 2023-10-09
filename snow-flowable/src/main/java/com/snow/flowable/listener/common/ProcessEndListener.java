@@ -1,11 +1,12 @@
 package com.snow.flowable.listener.common;
 
-import cn.hutool.core.date.BetweenFormater;
+import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.snow.common.constant.MessageConstants;
+import com.snow.common.core.domain.MessageEventRequest;
 import com.snow.common.core.domain.ProcessEventRequest;
 import com.snow.common.enums.MessageEventType;
 import com.snow.common.enums.ProcessStatus;
@@ -13,7 +14,6 @@ import com.snow.flowable.common.constants.FlowConstants;
 import com.snow.flowable.common.enums.FlowDefEnum;
 import com.snow.flowable.common.enums.FlowTypeEnum;
 import com.snow.flowable.service.FlowableService;
-import com.snow.common.core.domain.MessageEventRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.common.engine.api.delegate.event.FlowableEngineEntityEvent;
@@ -92,7 +92,7 @@ public class ProcessEndListener implements FlowableEventListener {
         messageEventDTO.setMessageOutsideId(processInstance.getId());
         messageEventDTO.setMessageShow(2);
         //计算流程用时
-        String spendTime= DateUtil.formatBetween(processInstance.getStartTime(), new Date(), BetweenFormater.Level.SECOND);
+        String spendTime= DateUtil.formatBetween(processInstance.getStartTime(), new Date(), BetweenFormatter.Level.SECOND);
         Map<String,Object> map= Maps.newHashMap();
         map.put("businessKey", processInstance.getBusinessKey());
         map.put("startTime", DateUtil.formatDateTime(processInstance.getStartTime()));

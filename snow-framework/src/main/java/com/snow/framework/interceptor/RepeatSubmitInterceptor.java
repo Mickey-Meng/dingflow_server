@@ -13,7 +13,7 @@ import com.snow.common.utils.ServletUtils;
 
 /**
  * 防止重复提交拦截器
- *
+ * 
  * @author snow
  */
 @Component
@@ -33,7 +33,7 @@ public abstract class RepeatSubmitInterceptor extends HandlerInterceptorAdapter
                 {
                     AjaxResult ajaxResult = AjaxResult.error("不允许重复提交，请稍后再试");
                     ServletUtils.renderString(response, JSON.marshal(ajaxResult));
-                    return true;
+                    return false;
                 }
             }
             return true;
@@ -46,7 +46,7 @@ public abstract class RepeatSubmitInterceptor extends HandlerInterceptorAdapter
 
     /**
      * 验证是否重复提交由子类实现具体的防重复提交的规则
-     *
+     * 
      * @param request
      * @return
      * @throws Exception

@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * 单数据记录对象 sys_form_data_record
- *
+ * 
  * @author 阿吉
  * @date 2021-11-21
  */
@@ -62,21 +62,6 @@ public class SysFormDataRecord extends BaseEntity
      * 钉钉流程实例id
      */
     private String dingProcessInstanceId;
-
-    /**
-     * 钉钉流程实例id
-     */
-    private String flowId;
-
-    /**
-     * 钉钉流程实例id
-     */
-    private String taskName;
-
-    /**
-     * 钉钉流程实例id
-     */
-    private Integer taskVersion;
 
 
     /** 版本号 */

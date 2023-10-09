@@ -34,9 +34,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class MessageServiceImpl extends BaseService implements MessageService {
 
-    private SysConfigServiceImpl isysConfigService= SpringUtils.getBean(SysConfigServiceImpl.class);
+    private final SysConfigServiceImpl isysConfigService= SpringUtils.getBean(SysConfigServiceImpl.class);
 
-    private ISysMessageTemplateService sysMessageTemplateService=SpringUtils.getBean(ISysMessageTemplateService.class);
+    private final ISysMessageTemplateService sysMessageTemplateService=SpringUtils.getBean(ISysMessageTemplateService.class);
 
     @Override
     @DingTalkLog(dingTalkLogType = DingTalkLogType.ASYNCSEND_V2,dingTalkUrl=BaseConstantUrl.ASYNCSEND_V2)
@@ -71,6 +71,7 @@ public class MessageServiceImpl extends BaseService implements MessageService {
             msg.getText().setContent(content);
 
         }
+
         if(sysSendMessageDTO.getDingTalkMessageType().equals(DingTalkMessageType.MARKDOWN)){
             msg.setMsgtype(DingTalkMessageType.MARKDOWN.getInfo());
             msg.setMarkdown(new OapiMessageCorpconversationAsyncsendV2Request.Markdown());

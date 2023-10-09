@@ -1,6 +1,8 @@
 package com.snow.framework.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusPropertiesCustomizer;
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
@@ -19,11 +21,18 @@ import java.util.Properties;
  */
 @EnableTransactionManagement(proxyTargetClass = true)
 @Configuration
-public class MyBatisPlusConfig
-{
+public class MyBatisPlusConfig {
+
     @Bean
-    public MybatisPlusInterceptor mybatisPlusInterceptor()
-    {
+    public MybatisPlusPropertiesCustomizer mybatisPlusPropertiesCustomizer() {
+        return properties -> {
+            GlobalConfig globalConfig = properties.getGlobalConfig();
+            globalConfig.setBanner(false);
+        };
+    }
+
+    @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 分页插件
         interceptor.addInnerInterceptor(paginationInnerInterceptor());
@@ -37,8 +46,7 @@ public class MyBatisPlusConfig
     /**
      * 分页插件，自动识别数据库类型 https://baomidou.com/guide/interceptor-pagination.html
      */
-    public PaginationInnerInterceptor paginationInnerInterceptor()
-    {
+    public PaginationInnerInterceptor paginationInnerInterceptor() {
         PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor();
         // 设置数据库类型为mysql
         paginationInnerInterceptor.setDbType(DbType.MYSQL);
@@ -64,16 +72,14 @@ public class MyBatisPlusConfig
     /**
      * 乐观锁插件 https://baomidou.com/guide/interceptor-optimistic-locker.html
      */
-    public OptimisticLockerInnerInterceptor optimisticLockerInnerInterceptor()
-    {
+    public OptimisticLockerInnerInterceptor optimisticLockerInnerInterceptor() {
         return new OptimisticLockerInnerInterceptor();
     }
 
     /**
      * 如果是对全表的删除或更新操作，就会终止该操作 https://baomidou.com/guide/interceptor-block-attack.html
      */
-    public BlockAttackInnerInterceptor blockAttackInnerInterceptor()
-    {
+    public BlockAttackInnerInterceptor blockAttackInnerInterceptor() {
         return new BlockAttackInnerInterceptor();
     }
 }

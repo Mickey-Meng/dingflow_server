@@ -11,7 +11,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
  * 单实例对象 sys_form_instance
- *
+ * 
  * @author 没用的阿吉
  * @date 2021-03-21
  */
@@ -31,18 +31,11 @@ public class SysFormInstance extends BaseEntity {
     /** 表单名称 */
     @Excel(name = "表单名称")
     private String formName;
-    /** 菜单代码 */
-    @Excel(name = "菜单代码")
-    private String menuCode;
+
     /**
      * 流程定义key
      */
     private String processKey;
-    /**
-     * 流程定义key
-     */
-
-    private String taskName;
 
     /**
      * 钉钉流程模板code

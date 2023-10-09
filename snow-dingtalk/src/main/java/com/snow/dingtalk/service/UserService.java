@@ -1,6 +1,7 @@
 package com.snow.dingtalk.service;
 
 import com.dingtalk.api.response.*;
+import com.snow.dingtalk.model.request.DingUserCreateRequest;
 import com.snow.dingtalk.model.request.UserListRequest;
 import com.snow.system.domain.SysUser;
 
@@ -14,6 +15,25 @@ import com.snow.system.domain.SysUser;
 public interface UserService  {
 
 
+    // =================== 新版用户操作相关接口 ===================
+
+    String createDingUser(DingUserCreateRequest createRequest);
+
+
+
+    OapiV2UserCreateResponse.UserCreateResponse createUser(SysUser sysUser);
+
+
+    /**
+     * 编辑用户
+     * @param sysUser
+     * @return
+     */
+    String updateUserV2(SysUser sysUser);
+
+
+    // =================== 老版用户操作相关接口 ===================
+
     /**
      * 通过临时授权码获取授权用户的个人信息
      * @param authCode
@@ -25,15 +45,8 @@ public interface UserService  {
      * @param
      * @return
      */
-    OapiV2UserCreateResponse.UserCreateResponse createUser(SysUser sysUser);
 
 
-    /**
-     * 编辑用户
-     * @param sysUser
-     * @return
-     */
-    String updateUserV2(SysUser sysUser);
 
     /**
      * 删除用户
@@ -69,4 +82,12 @@ public interface UserService  {
      * @return UnionId
      */
     String getUnionIdBySysUserId(Long sysUserId);
+
+
+    /**
+     * 根据手机号查询userId
+     * @param phone 手机号
+     * @return 用户id
+     */
+    String getUserByPhone(String phone);
 }

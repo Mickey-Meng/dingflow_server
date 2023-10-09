@@ -53,7 +53,7 @@ public class SysDingProcinst extends BaseEntity
     private String eventType;
 
     /** finish：审批正常结束（同意或拒绝）terminate：审批终止（发起人撤销审批单） */
-    @Excel(name = "finish：审批正常结束", readConverterExp = "同=意或拒绝")
+    @Excel(name = "finish：审批正常结束", readConverterExp = "同意或拒绝")
     private String type;
 
     /** 实例标题 */

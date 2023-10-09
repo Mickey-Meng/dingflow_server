@@ -1,7 +1,7 @@
 package com.snow.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.BetweenFormater;
+import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
 import com.snow.common.core.text.Convert;
 import com.snow.common.utils.DateUtils;
@@ -22,8 +22,7 @@ import java.util.Optional;
  * @date 2021-03-30
  */
 @Service
-public class SysMessageTransitionServiceImpl implements ISysMessageTransitionService 
-{
+public class SysMessageTransitionServiceImpl implements ISysMessageTransitionService {
     @Autowired
     private SysMessageTransitionMapper sysMessageTransitionMapper;
 
@@ -40,15 +39,18 @@ public class SysMessageTransitionServiceImpl implements ISysMessageTransitionSer
      * @return 消息流转中心
      */
     @Override
-    public SysMessageTransition selectSysMessageTransitionById(Long id)
-    {
-        return sysMessageTransitionMapper.selectSysMessageTransitionById(id);
+    public SysMessageTransition selectSysMessageTransitionById(Long id) {
+        SysMessageTransition sysMessageTransition = sysMessageTransitionMapper.selectSysMessageTransitionById(id);
+        sysMessageTransition.setProducerUser(sysUserService.selectUserById(Long.parseLong(sysMessageTransition.getProducerId())));
+        sysMessageTransition.setConsumerUser(sysUserService.selectUserById(Long.parseLong(sysMessageTransition.getConsumerId())));
+        sysMessageTransition.setSpendTime(DateUtil.formatBetween(sysMessageTransition.getCreateTime(), new Date(), BetweenFormatter.Level.SECOND)+"前");
+        Optional.ofNullable(sysMessageTransition.getTemplateCode()).ifPresent( m-> sysMessageTransition.setSysMessageTemplate(sysMessageTemplateService.getSysMessageTemplateByCode(sysMessageTransition.getTemplateCode())));
+        return sysMessageTransition;
     }
 
 
     @Override
-    public Boolean getIsRead(SysMessageTransition sysMessageTransition)
-    {
+    public Boolean getIsRead(SysMessageTransition sysMessageTransition) {
         SysMessageTransition isReadSysMessageTransition=new SysMessageTransition();
         isReadSysMessageTransition.setConsumerId(sysMessageTransition.getConsumerId());
         isReadSysMessageTransition.setMessageOutsideId(sysMessageTransition.getMessageOutsideId());
@@ -67,15 +69,14 @@ public class SysMessageTransitionServiceImpl implements ISysMessageTransitionSer
      * @return 消息流转中心
      */
     @Override
-    public List<SysMessageTransition> selectSysMessageTransitionList(SysMessageTransition sysMessageTransition)
-    {
+    public List<SysMessageTransition> selectSysMessageTransitionList(SysMessageTransition sysMessageTransition) {
         sysMessageTransition.setMessageStatus(0L);
         List<SysMessageTransition> sysMessageTransitionList= sysMessageTransitionMapper.selectSysMessageTransitionList(sysMessageTransition);
         if(CollUtil.isNotEmpty(sysMessageTransitionList)){
             sysMessageTransitionList.forEach(t->{
                 t.setProducerUser(sysUserService.selectUserById(Long.parseLong(t.getProducerId())));
                 t.setConsumerUser(sysUserService.selectUserById(Long.parseLong(t.getConsumerId())));
-                t.setSpendTime(DateUtil.formatBetween(t.getCreateTime(), new Date(), BetweenFormater.Level.SECOND)+"前");
+                t.setSpendTime(DateUtil.formatBetween(t.getCreateTime(), new Date(), BetweenFormatter.Level.SECOND)+"前");
                 Optional.ofNullable(t.getTemplateCode()).ifPresent( m-> t.setSysMessageTemplate(sysMessageTemplateService.getSysMessageTemplateByCode(t.getTemplateCode())));
             });
         }
@@ -90,8 +91,7 @@ public class SysMessageTransitionServiceImpl implements ISysMessageTransitionSer
      * @return 结果
      */
     @Override
-    public int insertSysMessageTransition(SysMessageTransition sysMessageTransition)
-    {
+    public int insertSysMessageTransition(SysMessageTransition sysMessageTransition) {
         sysMessageTransition.setCreateTime(DateUtils.getNowDate());
         sysMessageTransition.setUpdateTime(DateUtils.getNowDate());
         return sysMessageTransitionMapper.insertSysMessageTransition(sysMessageTransition);
@@ -104,8 +104,7 @@ public class SysMessageTransitionServiceImpl implements ISysMessageTransitionSer
      * @return 结果
      */
     @Override
-    public int updateSysMessageTransition(SysMessageTransition sysMessageTransition)
-    {
+    public int updateSysMessageTransition(SysMessageTransition sysMessageTransition) {
         sysMessageTransition.setUpdateTime(DateUtils.getNowDate());
         return sysMessageTransitionMapper.updateSysMessageTransition(sysMessageTransition);
     }
@@ -123,8 +122,7 @@ public class SysMessageTransitionServiceImpl implements ISysMessageTransitionSer
      * @return 结果
      */
     @Override
-    public int deleteSysMessageTransitionByIds(String ids)
-    {
+    public int deleteSysMessageTransitionByIds(String ids) {
         return sysMessageTransitionMapper.deleteSysMessageTransitionByIds(Convert.toStrArray(ids));
     }
 
@@ -135,8 +133,7 @@ public class SysMessageTransitionServiceImpl implements ISysMessageTransitionSer
      * @return 结果
      */
     @Override
-    public int deleteSysMessageTransitionById(Long id)
-    {
+    public int deleteSysMessageTransitionById(Long id) {
         return sysMessageTransitionMapper.deleteSysMessageTransitionById(id);
     }
 

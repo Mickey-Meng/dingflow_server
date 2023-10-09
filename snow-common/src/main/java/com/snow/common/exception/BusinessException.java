@@ -9,22 +9,32 @@ public class BusinessException extends RuntimeException
 {
     private static final long serialVersionUID = 1L;
 
-    protected final String message;
+    private final String message;
 
-    public BusinessException(String message)
-    {
+    private Integer code;
+
+    public BusinessException(String message) {
+        super();
         this.message = message;
     }
 
-    public BusinessException(String message, Throwable e)
-    {
+    public BusinessException(String message, Throwable e) {
         super(message, e);
         this.message = message;
     }
 
-    @Override
-    public String getMessage()
-    {
+    public BusinessException(Integer code, String message) {
+        super();
+        this.code=code;
+        this.message = message;
+    }
+
+
+    public String getMessage() {
         return message;
+    }
+
+    public Integer getCode() {
+        return code;
     }
 }

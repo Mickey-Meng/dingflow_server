@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.snow.system.mapper.ActDeModelMapper">
-
+    
     <resultMap type="ActDeModel" id="ActDeModelResult">
         <result property="id"    column="id"    />
         <result property="name"    column="name"    />
@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectActDeModelList" parameterType="ActDeModel" resultMap="ActDeModelResult">
         <include refid="selectActDeModelVo"/>
-        <where>
+        <where>  
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="modelKey != null  and modelKey != ''"> and model_key = #{modelKey}</if>
             <if test="description != null  and description != ''"> and description = #{description}</if>
@@ -49,12 +49,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </if>
         </where>
     </select>
-
+    
     <select id="selectActDeModelById" parameterType="String" resultMap="ActDeModelResult">
         <include refid="selectActDeModelVo"/>
         where id = #{id}
     </select>
-
+        
     <insert id="insertActDeModel" parameterType="ActDeModel">
         insert into act_de_model
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -116,7 +116,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteActDeModelByIds" parameterType="String">
-        delete from act_de_model where id in
+        delete from act_de_model where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

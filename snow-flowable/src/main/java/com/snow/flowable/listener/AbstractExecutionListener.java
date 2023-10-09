@@ -133,7 +133,6 @@ public abstract class AbstractExecutionListener<T extends AppForm> implements Ex
     protected SysUser getStartUserInfo() {
         String startUserId = getVariable(FlowConstants.START_USER_ID);
         log.info("获取到的开始人startUserId:{}", startUserId);
-        startUserId = "1";
         return sysUserService.selectUserById(Long.parseLong(startUserId));
     }
     /**
@@ -152,4 +151,4 @@ public abstract class AbstractExecutionListener<T extends AppForm> implements Ex
 
 }
 
-
+   

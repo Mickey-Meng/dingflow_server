@@ -7,7 +7,6 @@ import javax.validation.constraints.*;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import lombok.Data;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.snow.common.core.domain.BaseEntity;
@@ -21,13 +20,9 @@ public class SysMenu extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-
     /** 菜单ID */
     @TableId(value = "menu_id",type= IdType.AUTO)
     private Long menuId;
-
-    /** 菜单code */
-    private String menuCode;
 
     /** 菜单名称 */
     private String menuName;
@@ -88,15 +83,6 @@ public class SysMenu extends BaseEntity
     {
         this.menuName = menuName;
     }
-
-    public String getMenuCode() {
-        return menuCode;
-    }
-
-    public void setMenuCode(String menuCode) {
-        this.menuCode = menuCode;
-    }
-
 
     public String getParentName()
     {
@@ -217,7 +203,6 @@ public class SysMenu extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("menuId", getMenuId())
             .append("menuName", getMenuName())
-            .append("menuCode", getMenuCode())
             .append("parentId", getParentId())
             .append("orderNum", getOrderNum())
             .append("url", getUrl())

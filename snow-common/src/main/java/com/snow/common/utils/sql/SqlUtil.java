@@ -1,8 +1,14 @@
 package com.snow.common.utils.sql;
 
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
+import com.snow.common.core.page.TableDataInfo;
 import com.snow.common.exception.UtilException;
+
+import java.util.List;
 
 /**
  * sql操作工具类
@@ -48,11 +54,21 @@ public class SqlUtil
         if (StrUtil.isEmpty(value)) {
             return;
         }
-        String[] sqlKeywords = StrUtil.split(SQL_REGEX, "\\|");
-        for (int i = 0; i < sqlKeywords.length; i++) {
-            if (StrUtil.indexOfIgnoreCase(value, sqlKeywords[i]) > -1) {
+        List<String> sqlKeywords = StrUtil.split(SQL_REGEX, "\\|");
+        for (int i = 0; i < sqlKeywords.size(); i++) {
+            if (StrUtil.indexOfIgnoreCase(value, sqlKeywords.get(i)) > -1) {
                 throw new UtilException("参数存在SQL注入风险");
             }
         }
+    }
+
+    public static <R> TableDataInfo<R> getDataTable(List list, Class<R> clazz) {
+        TableDataInfo<R> rspData = new TableDataInfo<>();
+        rspData.setCode(0);
+        rspData.setRows(BeanUtil.copyToList(list,clazz));
+        rspData.setTotal(new PageInfo(list).getTotal());
+        rspData.setPageIndex(new PageInfo(list).getPageNum());
+        rspData.setPageSize(new PageInfo(list).getPageSize());
+        return rspData;
     }
 }

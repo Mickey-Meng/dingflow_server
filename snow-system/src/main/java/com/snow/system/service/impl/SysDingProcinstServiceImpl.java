@@ -1,17 +1,17 @@
 package com.snow.system.service.impl;
 
+import cn.hutool.core.date.BetweenFormatter;
+import cn.hutool.core.date.DateUtil;
+import com.snow.common.core.text.Convert;
+import com.snow.common.utils.StringUtils;
+import com.snow.system.domain.SysDingProcinst;
+import com.snow.system.mapper.SysDingProcinstMapper;
+import com.snow.system.service.ISysDingProcinstService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
-
-import cn.hutool.core.date.BetweenFormater;
-import cn.hutool.core.date.DateUtil;
-import com.snow.common.utils.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import com.snow.system.mapper.SysDingProcinstMapper;
-import com.snow.system.domain.SysDingProcinst;
-import com.snow.system.service.ISysDingProcinstService;
-import com.snow.common.core.text.Convert;
 
 /**
  * 钉钉流程实例Service业务层处理
@@ -22,7 +22,7 @@ import com.snow.common.core.text.Convert;
 @Service
 public class SysDingProcinstServiceImpl implements ISysDingProcinstService 
 {
-    @Autowired
+    @Resource
     private SysDingProcinstMapper sysDingProcinstMapper;
 
     /**
@@ -45,7 +45,7 @@ public class SysDingProcinstServiceImpl implements ISysDingProcinstService
     public SysDingProcinst selectSysDingProcinstByProcInstId(String procInstId){
         SysDingProcinst sysDingProcinst=sysDingProcinstMapper.selectSysDingProcinstByProcInstId(procInstId);
         if(StringUtils.isNotNull(sysDingProcinst)){
-            Optional.ofNullable(sysDingProcinst.getFinishTime()).ifPresent(m->DateUtil.formatBetween(sysDingProcinst.getStartTime(),sysDingProcinst.getFinishTime(), BetweenFormater.Level.SECOND));
+            Optional.ofNullable(sysDingProcinst.getFinishTime()).ifPresent(m->DateUtil.formatBetween(sysDingProcinst.getStartTime(),sysDingProcinst.getFinishTime(), BetweenFormatter.Level.SECOND));
         }
         return sysDingProcinst;
     }
@@ -62,7 +62,7 @@ public class SysDingProcinstServiceImpl implements ISysDingProcinstService
 
         sysDingProcinstList.forEach(t->
 
-            Optional.ofNullable(t.getFinishTime()).ifPresent(m->t.setProcessSpendTime(DateUtil.formatBetween(t.getStartTime(), t.getFinishTime(), BetweenFormater.Level.SECOND)))
+            Optional.ofNullable(t.getFinishTime()).ifPresent(m->t.setProcessSpendTime(DateUtil.formatBetween(t.getStartTime(), t.getFinishTime(), BetweenFormatter.Level.SECOND)))
         );
 
         return sysDingProcinstList;

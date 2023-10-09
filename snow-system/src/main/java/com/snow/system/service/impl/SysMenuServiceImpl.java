@@ -255,17 +255,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper,SysMenu> imple
     }
 
     /**
-     * 根据菜单ID查询信息
-     *
-     * @param menuCode 菜单ID
-     * @return 菜单信息
-     */
-    @Override
-    public SysMenu selectMenuByCode(String menuCode)
-    {
-        return menuMapper.selectMenuByCode(menuCode);
-    }
-    /**
      * 查询子菜单数量
      * 
      * @param parentId 父级菜单ID

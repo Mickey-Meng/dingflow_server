@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AttendanceListRecordRequest implements Serializable {
+public class AttendanceListRecordRequest  implements Serializable {
     private static final long serialVersionUID = -6492475769072358528L;
 
     /**

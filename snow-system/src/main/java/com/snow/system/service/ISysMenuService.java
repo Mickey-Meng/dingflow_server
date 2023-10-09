@@ -90,13 +90,6 @@ public interface ISysMenuService extends IService<SysMenu>
      * @return 菜单信息
      */
     public SysMenu selectMenuById(Long menuId);
-    /**
-     * 根据菜单Code查询信息
-     *
-     * @param menuCode 菜单Code
-     * @return 菜单信息
-     */
-    public SysMenu selectMenuByCode(String menuCode);
 
     /**
      * 查询菜单数量

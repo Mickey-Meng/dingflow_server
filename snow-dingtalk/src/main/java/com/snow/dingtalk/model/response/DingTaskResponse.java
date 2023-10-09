@@ -1,6 +1,6 @@
 package com.snow.dingtalk.model.response;
 
-import cn.hutool.core.date.BetweenFormater;
+import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
 import com.snow.common.utils.StringUtils;
 import lombok.Data;
@@ -60,7 +60,7 @@ public class DingTaskResponse implements Serializable {
     public String defaultTaskSpendTime() {
 
        if(StringUtils.isNotNull(finishTime)){
-           setTaskSpendTime(DateUtil.formatBetween(createTime, finishTime, BetweenFormater.Level.SECOND));
+           setTaskSpendTime(DateUtil.formatBetween(createTime, finishTime, BetweenFormatter.Level.SECOND));
        }
         return taskSpendTime;
     }

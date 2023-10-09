@@ -294,48 +294,6 @@ layui.config({base: './ayq/modules/'}).define(['layer', 'laytpl', 'element', 'fo
                     return _json;
                 }
             },
-            hr: {
-                /**
-                 * 根据json对象生成html对象
-                 * @param {object} json
-                 * @param {boolean} selected true 表示选择当前
-                 * */
-                render: function (json, selected) {
-                    if (selected === undefined) {
-                        selected = false;
-                    }
-                    var _disabled = json.disabled ? 'disabled=""' : '';
-                    var _disabledClass = json.disabled ? ' layui-disabled' : '';
-                    var _required = json.required ? 'required' : '';
-                    var _html = '<div id="{0}" class="layui-form-item {2}"  data-id="{0}" data-tag="{1}" data-index="{3}">'.format(json.id, json.tag, selected ? 'active' : '', json.index);
-
-                    _html += '<hr style="    margin: 18px 0;border-bottom: 2px solid #161010!important;" />';
-                    _html += '</div>';
-                    return _html;
-                },
-
-                /* 获取对象 */
-                jsonData: function (id, index, columncount) {
-                    //分配一个新的ID
-                    var _json = JSON.parse(JSON.stringify(formField.hr));
-                    _json.id = id == undefined ? autoId(_json.tag) : id;
-                    _json.index = index;
-                    return _json;
-                },
-                /* 根据 json 对象显示对应的属性 */
-                property: function (json) {
-                    $('#columnProperty').empty();
-                    var _html = '';
-                    _html = renderCommonProperty(json);//获取通用属性HTML字符串
-                    //处理特殊字符串
-                    for (var key in json) {
-                        if (key === 'index') {
-                            continue;
-                        }
-                    }
-                    $('#columnProperty').append(_html);
-                }
-            },
             numberInput: {
                 /**
                  * 根据json对象生成html对象
@@ -1240,7 +1198,6 @@ layui.config({base: './ayq/modules/'}).define(['layer', 'laytpl', 'element', 'fo
                         selected = false;
                     }
                     var _html = '<div id="{0}" class="layui-form-item {2}"  data-id="{0}" data-tag="{1}" data-index="{3}">'.format(json.id, json.tag, selected ? 'active' : '', json.index);
-
                     _html += '<label class="layui-form-label {0}">{1}:</label>'.format(json.required ? 'layui-form-required' : '', json.label);
                     _html += '<div class="layui-input-block">';
 
@@ -1248,7 +1205,7 @@ layui.config({base: './ayq/modules/'}).define(['layer', 'laytpl', 'element', 'fo
                     _html += '<button type="button" class="layui-btn layui-btn-normal" id="{0}">选择多文件</button> '.format(json.tag + json.id);
                     _html += ' <div class="layui-upload-list" style="max-width: 1000px;"><table class="layui-table">';
                     _html += '<colgroup><col><col width="150"><col width="260"><col width="150"></colgroup>';
-                    _html += '<thead><tr><th>文件名</th><th>大小</th></tr></thead>';
+                    _html += '<thead><tr><th>文件名</th><th>大小</th><th>上传进度</th><th>操作</th></tr></thead>';
                     _html += '<tbody id="list-{0}"></tbody></table></div>'.format(json.tag + json.id);
                     _html += '<button type="button" class="layui-btn" id="listAction-{0}">开始上传</button>'.format(json.tag + json.id);
                     _html += '</div>';
@@ -1301,8 +1258,6 @@ layui.config({base: './ayq/modules/'}).define(['layer', 'laytpl', 'element', 'fo
         Class.prototype.getFormData = function () {
             //获取表单区域所有值
             var json = form.val("formPreviewForm");
-
-
             for(let key  in iceEditorObjects){
                 json[key] = iceEditorObjects[key].getHTML();
             }
@@ -1312,8 +1267,6 @@ layui.config({base: './ayq/modules/'}).define(['layer', 'laytpl', 'element', 'fo
             for(let key  in signObjects){
                 json[key] = signObjects[key];
             }
-
-            console.log(json)
             return json;
         }
 
@@ -1433,13 +1386,8 @@ layui.config({base: './ayq/modules/'}).define(['layer', 'laytpl', 'element', 'fo
             var that = this
                 , options = that.config;
             $.each(jsondata, function (index, item) {
-                console.log(jsondata)
-                console.log(elem)
-                console.log(index)
-                console.log(item)
                 item.index = index;//设置index 仅仅为了传递给render对象，如果存在下级子节点那么 子节点的也要变动
                 if (options.selectItem === undefined) {
-
                     elem.append(that.components[item.tag].render(item, false));
                 } else {
                     if (options.selectItem.id === item.id) {
@@ -1666,7 +1614,6 @@ layui.config({base: './ayq/modules/'}).define(['layer', 'laytpl', 'element', 'fo
             //清空
             elem.empty();
             that.renderComponents(options.data, elem);
-
             elem.append(TPL_SUBMIT);
             that.setFormData(options.formData);
             form.render();//一次性渲染表单

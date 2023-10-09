@@ -7,7 +7,6 @@
 	<resultMap type="SysMenu" id="SysMenuResult">
 		<id     property="menuId"         column="menu_id"        />
 		<result property="menuName"       column="menu_name"      />
-		<result property="menuCode"       column="menu_code"      />
 		<result property="parentName"     column="parent_name"    />
 		<result property="parentId"       column="parent_id"      />
 		<result property="orderNum"       column="order_num"      />
@@ -26,12 +25,12 @@
 	</resultMap>
 
 	<sql id="selectMenuVo">
-        select menu_id, menu_name, menu_code,parent_id, order_num, url, target, menu_type, visible,is_refresh, ifnull(perms,'') as perms, icon, create_by, create_time
+        select menu_id, menu_name, parent_id, order_num, url, target, menu_type, visible,is_refresh, ifnull(perms,'') as perms, icon, create_by, create_time
 		from sys_menu
     </sql>
 
 	<select id="selectMenusByUserId" parameterType="Long" resultMap="SysMenuResult">
-		select distinct m.menu_id, m.menu_code,m.is_refresh,m.parent_id, m.menu_name, m.url, m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
+		select distinct m.menu_id, m.is_refresh,m.parent_id, m.menu_name, m.url, m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
 		from sys_menu m
 			 left join sys_role_menu rm on m.menu_id = rm.menu_id
 			 left join sys_user_role ur on rm.role_id = ur.role_id
@@ -41,7 +40,7 @@
 	</select>
 
 	<select id="selectMenuNormalAll" resultMap="SysMenuResult">
-		select distinct m.menu_id, m.menu_code,m.parent_id, m.is_refresh,m.menu_name, m.url, m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
+		select distinct m.menu_id, m.parent_id, m.is_refresh,m.menu_name, m.url, m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
 		from sys_menu m
 		where m.menu_type in ('M', 'C') and m.visible = 0
 		order by m.parent_id, m.order_num
@@ -53,7 +52,7 @@
 	</select>
 
 	<select id="selectMenuAllByUserId" parameterType="Long" resultMap="SysMenuResult">
-		select distinct m.menu_id, m.menu_code,m.parent_id, m.menu_name,m.is_refresh, m.is_refresh,m.url, m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
+		select distinct m.menu_id, m.parent_id, m.menu_name,m.is_refresh, m.is_refresh,m.url, m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
 		from sys_menu m
 			 left join sys_role_menu rm on m.menu_id = rm.menu_id
 			 left join sys_user_role ur on rm.role_id = ur.role_id
@@ -93,7 +92,7 @@
 	</select>
 
 	<select id="selectMenuListByUserId" parameterType="SysMenu" resultMap="SysMenuResult">
-		select distinct m.menu_id, m.menu_code,m.parent_id, m.menu_name, m.url, m.is_refresh,m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
+		select distinct m.menu_id, m.parent_id, m.menu_name, m.url, m.is_refresh,m.visible, ifnull(m.perms,'') as perms, m.target, m.menu_type, m.icon, m.order_num, m.create_time
 		from sys_menu m
 		left join sys_role_menu rm on m.menu_id = rm.menu_id
 		left join sys_user_role ur on rm.role_id = ur.role_id
@@ -113,17 +112,10 @@
 	</delete>
 
 	<select id="selectMenuById" parameterType="Long" resultMap="SysMenuResult">
-		SELECT t.menu_id, t.menu_code,t.parent_id, t.menu_name, t.order_num, t.url, t.target, t.menu_type, t.visible,t.is_refresh, t.perms, t.icon, t.remark,
+		SELECT t.menu_id, t.parent_id, t.menu_name, t.order_num, t.url, t.target, t.menu_type, t.visible,t.is_refresh, t.perms, t.icon, t.remark,
 			(SELECT menu_name FROM sys_menu WHERE menu_id = t.parent_id) parent_name
 		FROM sys_menu t
 		where t.menu_id = #{menuId}
-	</select>
-
-	<select id="selectMenuByCode" parameterType="String" resultMap="SysMenuResult">
-		SELECT t.menu_id, t.menu_code,t.parent_id, t.menu_name, t.order_num, t.url, t.target, t.menu_type, t.visible,t.is_refresh, t.perms, t.icon, t.remark,
-			(SELECT menu_name FROM sys_menu WHERE menu_id = t.parent_id) parent_name
-		FROM sys_menu t
-		where t.menu_code = #{menuCode}
 	</select>
 
 	<select id="selectCountMenuByParentId" resultType="Integer">
@@ -139,7 +131,6 @@
 		update sys_menu
 		<set>
 			<if test="menuName != null and menuName != ''">menu_name = #{menuName},</if>
-			<if test="menuCode != null and menuCode != ''">menu_code = #{menuCode},</if>
 			<if test="parentId != null and parentId != 0">parent_id = #{parentId},</if>
 			<if test="orderNum != null and orderNum != ''">order_num = #{orderNum},</if>
 			<if test="url != null">url = #{url},</if>
@@ -159,7 +150,6 @@
 	<insert id="insertMenu" parameterType="SysMenu">
 		insert into sys_menu(
 		<if test="menuId != null and menuId != 0">menu_id,</if>
-		<if test="menuCode != null and menuCode != ''">menu_code,</if>
 		<if test="parentId != null and parentId != 0">parent_id,</if>
 		<if test="menuName != null and menuName != ''">menu_name,</if>
 		<if test="orderNum != null and orderNum != ''">order_num,</if>
@@ -175,7 +165,6 @@
 		create_time
 		)values(
 		<if test="menuId != null and menuId != 0">#{menuId},</if>
-		<if test="menuCode != null and menuCode != ''">#{menuCode},</if>
 		<if test="parentId != null and parentId != 0">#{parentId},</if>
 		<if test="menuName != null and menuName != ''">#{menuName},</if>
 		<if test="orderNum != null and orderNum != ''">#{orderNum},</if>

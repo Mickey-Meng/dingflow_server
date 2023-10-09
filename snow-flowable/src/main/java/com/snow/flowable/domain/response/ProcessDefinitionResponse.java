@@ -3,7 +3,6 @@ package com.snow.flowable.domain.response;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * @author qimingjin
@@ -26,15 +25,8 @@ public class ProcessDefinitionResponse implements Serializable {
      */
     private String name;
 
-
-    /**
-     * 流程任务
-     */
-    private String taskInfo;
     /**
      * 流程key
      */
     private String key;
-
-
 }

@@ -18,6 +18,7 @@ import com.snow.dingtalk.common.BaseService;
 import com.snow.dingtalk.service.BlackboardService;
 import com.snow.system.domain.SysNotice;
 import com.snow.system.domain.SysUser;
+import com.snow.system.domain.response.SysUserResp;
 import com.snow.system.service.impl.SysUserServiceImpl;
 import com.taobao.api.ApiException;
 import lombok.extern.slf4j.Slf4j;

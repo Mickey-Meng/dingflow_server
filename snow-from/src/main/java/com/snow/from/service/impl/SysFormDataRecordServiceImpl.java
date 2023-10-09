@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * 单数据记录Service业务层处理
- *
+ * 
  * @author 阿吉
  * @date 2021-11-21
  */
@@ -30,7 +30,7 @@ public class SysFormDataRecordServiceImpl extends ServiceImpl<SysFormDataRecordM
 
     /**
      * 查询单数据记录
-     *
+     * 
      * @param id 单数据记录ID
      * @return 单数据记录
      */
@@ -55,8 +55,8 @@ public class SysFormDataRecordServiceImpl extends ServiceImpl<SysFormDataRecordM
     }
 
     /**
-     zhihu     * 查询单数据记录列表
-     *
+     * 查询单数据记录列表
+     * 
      * @param sysFormDataRecord 单数据记录
      * @return 单数据记录
      */
@@ -69,8 +69,6 @@ public class SysFormDataRecordServiceImpl extends ServiceImpl<SysFormDataRecordM
         lambda.eq(ObjectUtil.isNotEmpty(sysFormDataRecord.getFormId()),SysFormDataRecord::getFormId,sysFormDataRecord.getFormId());
         lambda.eq(ObjectUtil.isNotEmpty(sysFormDataRecord.getFormStatus()),SysFormDataRecord::getFormStatus,sysFormDataRecord.getFormStatus());
         lambda.eq(ObjectUtil.isNotEmpty(sysFormDataRecord.getDingProcessInstanceId()),SysFormDataRecord::getDingProcessInstanceId,sysFormDataRecord.getDingProcessInstanceId());
-        lambda.eq(ObjectUtil.isNotEmpty(sysFormDataRecord.getFlowId()),SysFormDataRecord::getFlowId,sysFormDataRecord.getFlowId());
-        lambda.eq(ObjectUtil.isNotEmpty(sysFormDataRecord.getTaskName()),SysFormDataRecord::getTaskName,sysFormDataRecord.getTaskName());
         lambda.in(CollUtil.isNotEmpty(sysFormDataRecord.getFormIdList()),SysFormDataRecord::getFormId,sysFormDataRecord.getFormId());
         lambda.orderByDesc(SysFormDataRecord::getCreateTime);
         return sysFormDataRecordMapper.selectList(lambda);
@@ -78,7 +76,7 @@ public class SysFormDataRecordServiceImpl extends ServiceImpl<SysFormDataRecordM
 
     /**
      * 新增单数据记录
-     *
+     * 
      * @param sysFormDataRecord 单数据记录
      * @return 结果
      */
@@ -91,7 +89,7 @@ public class SysFormDataRecordServiceImpl extends ServiceImpl<SysFormDataRecordM
 
     /**
      * 修改单数据记录
-     *
+     * 
      * @param sysFormDataRecord 单数据记录
      * @return 结果
      */
@@ -109,7 +107,7 @@ public class SysFormDataRecordServiceImpl extends ServiceImpl<SysFormDataRecordM
 
     /**
      * 删除单数据记录对象
-     *
+     * 
      * @param ids 需要删除的数据ID
      * @return 结果
      */
@@ -120,7 +118,7 @@ public class SysFormDataRecordServiceImpl extends ServiceImpl<SysFormDataRecordM
 
     /**
      * 删除单数据记录信息
-     *
+     * 
      * @param id 单数据记录ID
      * @return 结果
      */

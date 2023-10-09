@@ -21,8 +21,6 @@ public class FormRequest implements Serializable {
     @NotBlank(message = "表单名称不能为空")
     private String formName;
 
-    private String menuCode;
-
     @NotBlank(message = "表单数据不能为空")
     private String formData;
 }

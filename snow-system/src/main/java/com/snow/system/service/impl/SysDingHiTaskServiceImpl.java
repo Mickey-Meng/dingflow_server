@@ -1,6 +1,6 @@
 package com.snow.system.service.impl;
 
-import cn.hutool.core.date.BetweenFormater;
+import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUtil;
 import com.snow.common.core.text.Convert;
 import com.snow.common.utils.StringUtils;
@@ -69,7 +69,7 @@ public class SysDingHiTaskServiceImpl implements ISysDingHiTaskService
                 t.setSysDingProcinst(sysDingProcinst);
             }
 
-            Optional.ofNullable(t.getFinishTime()).ifPresent(s->t.setTaskSpendTime( DateUtil.formatBetween(t.getCreateTime(), t.getFinishTime(), BetweenFormater.Level.SECOND)));
+            Optional.ofNullable(t.getFinishTime()).ifPresent(s->t.setTaskSpendTime( DateUtil.formatBetween(t.getCreateTime(), t.getFinishTime(), BetweenFormatter.Level.SECOND)));
 
 
         });

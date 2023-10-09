@@ -2,12 +2,10 @@ package com.snow.system.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Optional;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.snow.common.constant.SequenceConstants;
 import com.snow.common.exception.BusinessException;
 import com.snow.common.utils.DateUtils;
@@ -16,7 +14,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.snow.system.domain.SysFnAccountBill;
 import com.snow.system.domain.request.DeductionAccountRequest;
 import com.snow.system.domain.request.RechargeAccountRequest;
-import com.snow.system.domain.response.SysFnAccountResponse;
+import com.snow.system.domain.response.SysFnAccountResp;
 import org.springframework.stereotype.Service;
 import com.snow.system.mapper.SysFnAccountMapper;
 import com.snow.system.domain.SysFnAccount;
@@ -116,9 +114,9 @@ public class SysFnAccountServiceImpl extends ServiceImpl<SysFnAccountMapper, Sys
     }
 
     @Override
-    public SysFnAccountResponse getSysFnAccountByNo(String accountNo) {
+    public SysFnAccountResp getSysFnAccountByNo(String accountNo) {
         SysFnAccount sysFnAccount = getOne(new QueryWrapper<SysFnAccount>().lambda().eq(SysFnAccount::getAccountNo, accountNo));
-        SysFnAccountResponse sysFnAccountResponse = BeanUtil.copyProperties(sysFnAccount, SysFnAccountResponse.class);
+        SysFnAccountResp sysFnAccountResponse = BeanUtil.copyProperties(sysFnAccount, SysFnAccountResp.class);
         //计算可用金额
         BigDecimal usableAmount = sysFnAccountResponse.getTotalAmount().subtract(sysFnAccountResponse.getFreezeAmount());
         sysFnAccountResponse.setUsableAmount(usableAmount);

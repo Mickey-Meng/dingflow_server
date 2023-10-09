@@ -7,13 +7,12 @@ package com.snow.flowable.common.enums;
  * @date 2020/12/7 15:54
  */
 public enum  FlowDefEnum {
-    START_STREAM_MODEL("start_stream_model", "工程报表审批"),
 
     SNOW_OA_LEAVE("snow_oa_leave", "请假申请流程"),
 
     PURCHASE_ORDER_PROCESS("purchase_order_process", "采购审批流程"),
 
-    SNOW_OA_RESIGN_PROCESS("snow_oa_resign", "snow系统离职审批流程"),
+    SNOW_OA_RESIGN_PROCESS("snow_oa_resign", "离职审批流程"),
 
     SNOW_OA_CUSTOMER_ADMITTANCE("snow_oa_customer_admittance","客户准入流程"),
 

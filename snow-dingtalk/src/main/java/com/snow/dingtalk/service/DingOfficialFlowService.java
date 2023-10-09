@@ -54,6 +54,13 @@ public interface DingOfficialFlowService {
   // void addProcessInstanceComment();
 
     /**
+     * 执行流程实例
+     * @param flowExecuteTaskRequest 请求参数
+     * @return 同意&拒绝
+     */
+    Boolean executeProcessInstanceV2(FlowExecuteTaskRequest flowExecuteTaskRequest);
+
+    /**
      * 获取审批实例详情
      * @param processInstanceId
      * @return

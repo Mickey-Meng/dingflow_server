@@ -30,13 +30,13 @@ import java.util.List;
 @Slf4j
 public class SyncSysUserService implements ISyncSysInfo {
 
-    private UserService userService= SpringUtils.getBean(UserService.class);
+    private final UserService userService= SpringUtils.getBean(UserService.class);
 
-    private ISysUserService sysUserService= SpringUtils.getBean(ISysUserService.class);
+    private final ISysUserService sysUserService= SpringUtils.getBean(ISysUserService.class);
 
-    private ISysConfigService configService=SpringUtils.getBean(ISysConfigService.class);
+    private final ISysConfigService configService=SpringUtils.getBean(ISysConfigService.class);
 
-    private SysPasswordService passwordService=SpringUtils.getBean(SysPasswordService.class);
+    private final SysPasswordService passwordService=SpringUtils.getBean(SysPasswordService.class);
 
     @Override
     public JSONObject SyncSysInfo(DingTalkListenerType dingTalkListenerType, JSONObject jsonObject) {

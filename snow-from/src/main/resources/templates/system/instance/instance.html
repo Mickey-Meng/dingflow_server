@@ -9,12 +9,12 @@
         <div class="row">
             <div class="col-sm-12 search-collapse">
                 <div class="ibox-content">
-                   <!-- <ul  class="unstyled">
+                    <ul  class="unstyled">
                         <li>
                             <h4 class="help-block m-b-none text-primary"><i class="fa fa-info-circle"></i> DingFlow表单流程操作步骤:</h4>
                             <ul  class="unstyled">
                                 <li>
-                                    <span class="help-block m-b-none text-primary">1. 流程设计: 点击<span class=" text-danger">流程管理&ndash;&gt;系统流程管理&ndash;&gt;模型管理&ndash;&gt;设计流程</span> 按钮,绘制您的流程图;绘制任务节点时，统一要求通过条件:${isPass==true}
+                                    <span class="help-block m-b-none text-primary">1. 流程设计: 点击<span class=" text-danger">流程管理-->系统流程管理-->模型管理-->设计流程</span> 按钮,绘制您的流程图;绘制任务节点时，统一要求通过条件:${isPass==true}
                 驳回条件：${isPass==false}
                 </span>
                                 </li>
@@ -28,19 +28,21 @@
                         </li>
 
                         <span class="help-block m-b-none text-primary">到此，即可发起流程，正常审批。如果您的业务比较复杂，建议您使用DingFlow Api流程方式自行编码完成</span>
-                    </ul>-->
+                    </ul>
                 </div>
             </div>
             <div class="col-sm-12 search-collapse">
                 <form id="formId">
                     <div class="select-list">
                         <ul>
-
+                            <li>
+                                <label>表单ID：</label>
+                                <input type="text" name="formCode"/>
+                            </li>
                             <li>
                                 <label>表单名称：</label>
                                 <input type="text" name="formName"/>
                             </li>
-
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>

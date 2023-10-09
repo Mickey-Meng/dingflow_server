@@ -13,6 +13,7 @@ import java.io.Serializable;
 @Data
 public class TaskBaseDTO extends FlowBaseDTO implements Serializable {
 
+    private static final long serialVersionUID = -23871577056093441L;
     /**
      * 流程实例ID
      */

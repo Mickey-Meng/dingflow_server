@@ -5,7 +5,7 @@ import com.snow.system.domain.SysFnAccount;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.snow.system.domain.request.DeductionAccountRequest;
 import com.snow.system.domain.request.RechargeAccountRequest;
-import com.snow.system.domain.response.SysFnAccountResponse;
+import com.snow.system.domain.response.SysFnAccountResp;
 
 /**
  * 账户Service接口
@@ -68,7 +68,7 @@ public interface ISysFnAccountService extends IService<SysFnAccount>
      * @param accountNo 账户号
      * @return 账户信息
      */
-    public SysFnAccountResponse getSysFnAccountByNo(String accountNo);
+    public SysFnAccountResp getSysFnAccountByNo(String accountNo);
 
     /**
      *  充值账户

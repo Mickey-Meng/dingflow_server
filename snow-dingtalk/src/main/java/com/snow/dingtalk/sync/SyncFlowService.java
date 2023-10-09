@@ -31,21 +31,10 @@ import java.util.Optional;
 @Component
 @Slf4j
 public class SyncFlowService implements ISyncSysInfo  {
-
-    @Autowired
-    private SysDingProcinstServiceImpl sysDingProcinstService=SpringUtils.getBean(SysDingProcinstServiceImpl.class);
-
-    @Autowired
-    private DingOfficialFlowServiceImpl dingOfficialFlowService=SpringUtils.getBean(DingOfficialFlowServiceImpl.class);
-
-    @Autowired
-    private SysDingRuTaskServiceImpl sysDingRuTaskService=SpringUtils.getBean(SysDingRuTaskServiceImpl.class);
-
-
-    @Autowired
-    private SysDingHiTaskServiceImpl sysDingHiTaskService=SpringUtils.getBean(SysDingHiTaskServiceImpl.class);
-
-    @Override
+    private final SysDingProcinstServiceImpl sysDingProcinstService=SpringUtils.getBean(SysDingProcinstServiceImpl.class);
+    private final DingOfficialFlowServiceImpl dingOfficialFlowService=SpringUtils.getBean(DingOfficialFlowServiceImpl.class);
+    private final SysDingRuTaskServiceImpl sysDingRuTaskService=SpringUtils.getBean(SysDingRuTaskServiceImpl.class);
+    private final SysDingHiTaskServiceImpl sysDingHiTaskService=SpringUtils.getBean(SysDingHiTaskServiceImpl.class);
     public JSONObject SyncSysInfo(DingTalkListenerType dingTalkListenerType, JSONObject jsonObject) {
 
         Integer code = dingTalkListenerType.getCode();

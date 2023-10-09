@@ -121,10 +121,8 @@ layui.config({base: './ayq/modules/'}).define(['layer', 'laytpl', 'element', 'fo
             }
             , MOD_NAME = 'formPreviewDetail'
             , ELEM = '.layui-form-designer'
-            , TPL_SUBMIT = ['<div class="layui-row">'
-                , '<div class="layui-input-block layui-col-md4 layui-col-md-offset8">'
-                , '<button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">提交</button>'
-                , '<button type="reset" class="layui-btn layui-btn-primary">重置</button>'
+            , TPL_SUBMIT = ['<div class="layui-form-item">'
+                , '<div class="layui-input-block layui-col-md4 layui-col-md-offset5">'
                 , '</div>'
                 , '</div>'].join('')
             //外部接口
@@ -1205,7 +1203,7 @@ layui.config({base: './ayq/modules/'}).define(['layer', 'laytpl', 'element', 'fo
                     _html += '<button type="button" class="layui-btn layui-btn-normal" id="{0}">选择多文件</button> '.format(json.tag + json.id);
                     _html += ' <div class="layui-upload-list" style="max-width: 1000px;"><table class="layui-table">';
                     _html += '<colgroup><col><col width="150"><col width="260"><col width="150"></colgroup>';
-                    _html += '<thead><tr><th>文件名</th><th>大小</th></tr></thead>';
+                    _html += '<thead><tr><th>文件名</th><th>大小</th><th>上传进度</th><th>操作</th></tr></thead>';
                     _html += '<tbody id="list-{0}"></tbody></table></div>'.format(json.tag + json.id);
                     _html += '<button type="button" class="layui-btn" id="listAction-{0}">开始上传</button>'.format(json.tag + json.id);
                     _html += '</div>';
@@ -1606,20 +1604,6 @@ layui.config({base: './ayq/modules/'}).define(['layer', 'laytpl', 'element', 'fo
             });
         };
 
-
-        function GetRequest2(key) {
-            var url = location.search;
-            var theRequest = new Object();
-            if (url.indexOf("?") != -1) {
-                var str = url.substr(1);
-                strs = str.split("&");
-                for (var i = 0; i < strs.length; i++) {
-                    theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
-                }
-            }
-            var value = theRequest[key];
-            return value;
-        }
         /* 重新渲染设计区*/
         Class.prototype.renderForm = function () {
             var that = this
@@ -1628,13 +1612,7 @@ layui.config({base: './ayq/modules/'}).define(['layer', 'laytpl', 'element', 'fo
             //清空
             elem.empty();
             that.renderComponents(options.data, elem);
-            var flag_param = GetRequest2("flag");
-            console.log(flag_param)
-            if (flag_param == 1||"1"==flag_param) {
-                elem.append(TPL_SUBMIT);
-            }
-
-
+            elem.append(TPL_SUBMIT);
             that.setFormData(options.formData);
             form.render();//一次性渲染表单
             if (options.data.length != 0) {
